@@ -260,12 +260,12 @@ export function ContratDeConfidentialiteEditor() {
         <div className="overflow-y-auto border-l border-gray-200 pl-4">
           <ContratDeConfidentialiteForm
             contratDeConfidentialite={contratDeConfidentialite}
-            setDisclosingParty={setDisclosingParty}
-            setReceivingParty={setReceivingParty}
-            setReciprocal={setReciprocal}
-            setScope={setScope}
-            setObligations={setObligations}
-            setLegalTerms={setLegalTerms}
+            setDisclosingPartyChange={setDisclosingParty}
+            setReceivingPartyChange={setReceivingParty}
+            setReciprocalChange={setReciprocal}
+            setScopeChange={setScope}
+            setObligationsChange={setObligations}
+            setLegalTermsChange={setLegalTerms}
           />
         </div>
       </div>
