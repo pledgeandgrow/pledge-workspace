@@ -703,16 +703,7 @@ export function CahierDesChargesEditor() {
               (s as HTMLElement).style.display = "block";
             }
           });
-          document.querySelectorAll("*").forEach((el) => {
-            const element = el as HTMLElement;
-            const computed = getComputedStyle(element);
-            if (computed.color.includes("oklch")) {
-              element.style.color = "black";
-            }
-            if (computed.backgroundColor.includes("oklch")) {
-              element.style.backgroundColor = "white";
-            }
-          });
+
 
           // Capture the current section
           const canvas = await html2canvas(section as HTMLElement, {

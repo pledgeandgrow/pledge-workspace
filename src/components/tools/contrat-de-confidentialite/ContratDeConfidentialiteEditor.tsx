@@ -7,12 +7,12 @@ import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import { ContratDeConfidentialitePreview } from "./ContratDeConfidentialitePreview";
 import { ContratDeConfidentialiteForm } from "./ContratDeConfidentialiteForm";
-import { 
+import {
   ContratDeConfidentialite,
   PartyInfo,
   ConfidentialityScope,
   Obligations,
-  LegalTerms
+  LegalTerms,
 } from "./types";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -20,7 +20,7 @@ import html2canvas from "html2canvas";
 export function ContratDeConfidentialiteEditor() {
   const { toast } = useToast();
   const documentRef = useRef<HTMLDivElement>(null);
-  
+
   // Initialize with default values
   const [disclosingParty, setDisclosingParty] = useState<PartyInfo>({
     type: "company",
@@ -33,7 +33,7 @@ export function ContratDeConfidentialiteEditor() {
     phone: "+33 7 53 69 58 40",
     representative: "Mehdi Berel",
     representativeTitle: "Directeur",
-    siret: "93157766200014"
+    siret: "93157766200014",
   });
 
   const [receivingParty, setReceivingParty] = useState<PartyInfo>({
@@ -47,44 +47,58 @@ export function ContratDeConfidentialiteEditor() {
     phone: "",
     representative: "",
     representativeTitle: "",
-    siret: ""
+    siret: "",
   });
 
   const [reciprocal, setReciprocal] = useState<boolean>(false);
 
   const [scope, setScope] = useState<ConfidentialityScope>({
     purpose: "Évaluation d'une potentielle collaboration commerciale",
-    confidentialInfoDescription: "Toute information technique, commerciale, financière, juridique ou autre, quelle que soit sa nature, sa forme ou son support, divulguée par une Partie à l'autre, directement ou indirectement, par écrit ou oralement, et désignée comme confidentielle par la Partie divulgatrice.",
-    excludedInfo: "Les informations qui sont ou deviennent publiques sans faute du Récepteur, les informations déjà connues du Récepteur avant la divulgation, les informations développées indépendamment par le Récepteur, et les informations que le Récepteur est légalement tenu de divulguer.",
+    confidentialInfoDescription:
+      "Toute information technique, commerciale, financière, juridique ou autre, quelle que soit sa nature, sa forme ou son support, divulguée par une Partie à l'autre, directement ou indirectement, par écrit ou oralement, et désignée comme confidentielle par la Partie divulgatrice.",
+    excludedInfo:
+      "Les informations qui sont ou deviennent publiques sans faute du Récepteur, les informations déjà connues du Récepteur avant la divulgation, les informations développées indépendamment par le Récepteur, et les informations que le Récepteur est légalement tenu de divulguer.",
     duration: {
       value: 3,
-      unit: "years"
+      unit: "years",
     },
-    startDate: new Date().toISOString().split('T')[0],
-    territorialScope: "France et international"
+    startDate: new Date().toISOString().split("T")[0],
+    territorialScope: "France et international",
   });
 
   const [obligations, setObligations] = useState<Obligations>({
-    disclosureRestrictions: "Le Récepteur s'engage à ne pas divulguer les Informations Confidentielles à des tiers sans l'accord préalable écrit de la Partie divulgatrice.",
-    protectionMeasures: "Le Récepteur s'engage à protéger les Informations Confidentielles avec le même degré de précaution qu'il utilise pour protéger ses propres informations confidentielles, et au minimum avec un degré de précaution raisonnable.",
-    returnOfInfo: "À la demande de la Partie divulgatrice, ou à la fin de l'objet pour lequel les Informations Confidentielles ont été divulguées, le Récepteur s'engage à retourner ou détruire toutes les Informations Confidentielles et leurs copies.",
-    notificationRequirements: "Le Récepteur s'engage à informer immédiatement la Partie divulgatrice de toute divulgation non autorisée d'Informations Confidentielles dont il aurait connaissance."
+    disclosureRestrictions:
+      "Le Récepteur s'engage à ne pas divulguer les Informations Confidentielles à des tiers sans l'accord préalable écrit de la Partie divulgatrice.",
+    protectionMeasures:
+      "Le Récepteur s'engage à protéger les Informations Confidentielles avec le même degré de précaution qu'il utilise pour protéger ses propres informations confidentielles, et au minimum avec un degré de précaution raisonnable.",
+    returnOfInfo:
+      "À la demande de la Partie divulgatrice, ou à la fin de l'objet pour lequel les Informations Confidentielles ont été divulguées, le Récepteur s'engage à retourner ou détruire toutes les Informations Confidentielles et leurs copies.",
+    notificationRequirements:
+      "Le Récepteur s'engage à informer immédiatement la Partie divulgatrice de toute divulgation non autorisée d'Informations Confidentielles dont il aurait connaissance.",
   });
 
   const [legalTerms, setLegalTerms] = useState<LegalTerms>({
     applicableLaw: "Le présent contrat est soumis au droit français.",
-    disputeResolution: "Tout litige relatif à l'interprétation ou à l'exécution du présent contrat sera soumis aux tribunaux compétents de Paris.",
-    penalties: "Toute violation des obligations de confidentialité pourra donner lieu à des dommages et intérêts.",
-    forceMajeure: "Aucune Partie ne sera tenue responsable de la non-exécution de ses obligations en cas de force majeure.",
-    entireAgreement: "Le présent contrat constitue l'intégralité de l'accord entre les Parties concernant l'objet des présentes et remplace tout accord ou arrangement antérieur.",
-    amendments: "Toute modification du présent contrat devra faire l'objet d'un avenant écrit signé par les deux Parties.",
-    severability: "Si une disposition du présent contrat est jugée invalide ou inapplicable, les autres dispositions resteront en vigueur.",
-    additionalClauses: ""
+    disputeResolution:
+      "Tout litige relatif à l'interprétation ou à l'exécution du présent contrat sera soumis aux tribunaux compétents de Paris.",
+    penalties:
+      "Toute violation des obligations de confidentialité pourra donner lieu à des dommages et intérêts.",
+    forceMajeure:
+      "Aucune Partie ne sera tenue responsable de la non-exécution de ses obligations en cas de force majeure.",
+    entireAgreement:
+      "Le présent contrat constitue l'intégralité de l'accord entre les Parties concernant l'objet des présentes et remplace tout accord ou arrangement antérieur.",
+    amendments:
+      "Toute modification du présent contrat devra faire l'objet d'un avenant écrit signé par les deux Parties.",
+    severability:
+      "Si une disposition du présent contrat est jugée invalide ou inapplicable, les autres dispositions resteront en vigueur.",
+    additionalClauses: "",
   });
 
   // Generate a reference number for the contract
-  const reference = `NDA-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
-  const date = new Date().toISOString().split('T')[0];
+  const reference = `NDA-${new Date().getFullYear()}-${String(
+    Math.floor(Math.random() * 1000)
+  ).padStart(3, "0")}`;
+  const date = new Date().toISOString().split("T")[0];
 
   const contratDeConfidentialite: ContratDeConfidentialite = {
     reference,
@@ -94,7 +108,7 @@ export function ContratDeConfidentialiteEditor() {
     reciprocal,
     scope,
     obligations,
-    legalTerms
+    legalTerms,
   };
 
   const exportToPdf = async () => {
@@ -103,83 +117,98 @@ export function ContratDeConfidentialiteEditor() {
         title: "Génération du PDF",
         description: "Veuillez patienter pendant la génération du PDF...",
       });
-      
+
       try {
         // Create a PDF document
         const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
-          compress: true
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+          compress: true,
         });
-        
+
         // Define PDF dimensions and margins
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const margin = 15; // 15mm margins on all sides
-        
+
         // Get all sections
-        const sections = documentRef.current.querySelectorAll('.nda-section');
+        const sections = documentRef.current.querySelectorAll(".nda-section");
         if (!sections || sections.length === 0) {
           throw new Error("Could not find document sections");
         }
-        
+
         // Process each section
         for (let i = 0; i < sections.length; i++) {
           const section = sections[i];
-          
+
           // Hide all sections except the current one
           Array.from(sections).forEach((s, index) => {
             if (index !== i) {
-              (s as HTMLElement).style.display = 'none';
+              (s as HTMLElement).style.display = "none";
             } else {
-              (s as HTMLElement).style.display = 'block';
+              (s as HTMLElement).style.display = "block";
             }
           });
-          
+
+
           // Capture the current section
           const canvas = await html2canvas(section as HTMLElement, {
             scale: 2,
             logging: false,
             useCORS: true,
-            backgroundColor: "#ffffff"
+            backgroundColor: "#ffffff",
           });
-          
+
           // Add section to PDF
-          const imgData = canvas.toDataURL('image/png');
+          const imgData = canvas.toDataURL("image/png");
           const imgWidth = canvas.width;
           const imgHeight = canvas.height;
-          
+
           // Calculate ratio while ensuring margins
-          const availableWidth = pdfWidth - (margin * 2);
-          const availableHeight = pdfHeight - (margin * 2);
-          const imgRatio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
-          
+          const availableWidth = pdfWidth - margin * 2;
+          const availableHeight = pdfHeight - margin * 2;
+          const imgRatio = Math.min(
+            availableWidth / imgWidth,
+            availableHeight / imgHeight
+          );
+
           // Center the image with margins
           const imgX = margin + (availableWidth - imgWidth * imgRatio) / 2;
           const imgY = margin;
-          
+
           // Add new page for sections after the first one
           if (i > 0) {
             pdf.addPage();
           }
-          
-          pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * imgRatio, imgHeight * imgRatio);
-          
+
+          pdf.addImage(
+            imgData,
+            "PNG",
+            imgX,
+            imgY,
+            imgWidth * imgRatio,
+            imgHeight * imgRatio
+          );
+
           // Add page number
           pdf.setFontSize(8);
           pdf.setTextColor(150, 150, 150);
-          pdf.text(`Page ${i + 1}/${sections.length}`, pdfWidth - 20, pdfHeight - 10);
+          pdf.text(
+            `Page ${i + 1}/${sections.length}`,
+            pdfWidth - 20,
+            pdfHeight - 10
+          );
         }
-        
+
         // Restore display of all sections
         Array.from(sections).forEach((s) => {
-          (s as HTMLElement).style.display = 'block';
+          (s as HTMLElement).style.display = "block";
         });
-        
+
         // Save the PDF
         pdf.save(`${reference}.pdf`);
-        
+
         toast({
           title: "PDF généré avec succès",
           description: `Le PDF a été téléchargé (${sections.length} pages)`,
@@ -199,7 +228,11 @@ export function ContratDeConfidentialiteEditor() {
       <div className="flex justify-between items-center p-6 border-b">
         <div className="flex items-center space-x-4">
           <Link href="/workspace" className="mr-2">
-            <Button variant="ghost" size="sm" className="flex items-center gap-1 text-gray-500 hover:text-primary">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 text-gray-500 hover:text-primary"
+            >
               <ArrowLeft className="h-4 w-4" />
               <span>Workspace</span>
             </Button>
@@ -247,7 +280,7 @@ export function ContratDeConfidentialiteEditor() {
               Document complet
             </div>
           </div>
-          
+
           <div className="bg-gray-50 rounded-lg p-2 shadow-inner overflow-y-auto">
             <ContratDeConfidentialitePreview
               ref={documentRef}
