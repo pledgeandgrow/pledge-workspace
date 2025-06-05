@@ -46,13 +46,13 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
         </div>
 
         {/* Project Summary */}
-        <div className="mb-8 cdc-section">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Résumé du Projet</h2>
           <p className="whitespace-pre-line">{data.projectInfo.summary}</p>
         </div>
 
         {/* Client and Company Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 cdc-section" >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <h2 className="text-xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Client</h2>
             <p><strong>Nom:</strong> {data.clientInfo.name}</p>
@@ -78,7 +78,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Team Members */}
         {data.teamMembers.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Équipe Projet</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.teamMembers.map((member) => (
@@ -98,7 +98,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Project Objectives */}
         {data.objectives.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Objectifs du Projet</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.objectives.map((objective) => (
@@ -126,7 +126,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
         )}
 
         {/* Project Scope */}
-        <div className="mb-8 cdc-section">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Périmètre du Projet</h2>
           
           <div className="mb-4">
@@ -157,7 +157,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Deliverables */}
         {data.deliverables.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Livrables</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.deliverables.map((deliverable) => (
@@ -177,7 +177,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Milestones */}
         {data.milestones.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Jalons du Projet</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.milestones.map((milestone) => (
@@ -205,7 +205,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Functional Requirements */}
         {data.functionalRequirements.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Exigences Fonctionnelles</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.functionalRequirements.map((requirement) => (
@@ -235,7 +235,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Technical Requirements */}
         {data.technicalRequirements.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Exigences Techniques</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.technicalRequirements.map((requirement) => (
@@ -265,7 +265,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Quality Requirements */}
         {data.qualityRequirements.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Exigences de Qualité</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.qualityRequirements.map((requirement) => (
@@ -290,7 +290,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
         )}
 
         {/* Budget */}
-        <div className="mb-8 cdc-section">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Budget</h2>
           
           {data.budget.breakdown.length > 0 && (
@@ -364,7 +364,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
         </div>
 
         {/* Timeline */}
-        <div className="mb-8 cdc-section">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Calendrier</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -409,7 +409,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Risks and Mitigations */}
         {data.risks.length > 0 && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Risques et Mitigations</h2>
             <div className="grid grid-cols-1 gap-4">
               {data.risks.map((risk) => (
@@ -440,7 +440,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
         )}
 
         {/* Approval */}
-        <div className="mb-8 cdc-section">
+        <div className="mb-8">
           <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Approbation</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -477,7 +477,7 @@ const CahierDesChargesPreviewComponent = forwardRef<HTMLDivElement, CahierDesCha
 
         {/* Appendices */}
         {data.appendices && (
-          <div className="mb-8 cdc-section">
+          <div className="mb-8">
             <h2 className="text-2xl font-bold border-b-2 border-gray-300 pb-2 mb-4">Annexes</h2>
             <p className="whitespace-pre-line">{data.appendices}</p>
           </div>

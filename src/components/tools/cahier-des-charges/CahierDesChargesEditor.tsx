@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, /* Download, */ FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -21,10 +21,10 @@ import {
   TechnicalRequirement,
   QualityRequirement,
   Budget,
-  BudgetItem,
   Timeline,
   Risk,
   Approval,
+  BudgetItem,
   PaymentMilestone,
   TimelinePhase,
 } from "./types";
@@ -35,7 +35,17 @@ export function CahierDesChargesEditor() {
   const { toast } = useToast();
   const documentRef = useRef<HTMLDivElement>(null);
 
-  const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+  const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
+    title: "Cahier des Charges",
+    reference: `CDC-${new Date().getFullYear()}-${String(
+      Math.floor(Math.random() * 1000)
+    ).padStart(3, "0")}`,
+    date: new Date().toISOString().split("T")[0],
+    version: "1.0",
+    status: "draft",
+    summary: "Description du projet et de ses objectifs généraux.",
+  });
+
   const [clientInfo, setClientInfo] = useState<ClientInfo>({
     name: "",
     contactPerson: "",
@@ -267,26 +277,6 @@ export function CahierDesChargesEditor() {
 
   const [appendices, setAppendices] = useState<string>("");
 
-  useEffect(() => {
-    const now = new Date();
-    const initialProjectInfo: ProjectInfo = {
-      title: "Cahier des Charges",
-      reference: `CDC-${now.getFullYear()}-${String(
-        Math.floor(Math.random() * 1000)
-      ).padStart(3, "0")}`,
-      date: now.toISOString().split("T")[0],
-      version: "1.0",
-      status: "draft",
-      summary: "Description du projet et de ses objectifs généraux.",
-    };
-
-    setProjectInfo(initialProjectInfo);
-  }, []);
-
-  if (!projectInfo) {
-    return null; // ou un spinner
-  }
-
   const cahierDesCharges: CahierDesCharges = {
     projectInfo,
     clientInfo,
@@ -318,7 +308,7 @@ export function CahierDesChargesEditor() {
     setTeamMembers([...teamMembers, newMember]);
   };
 
-  const _updateTeamMember = (
+  const updateTeamMember = (
     id: string,
     field: keyof TeamMember,
     value: string
@@ -345,7 +335,7 @@ export function CahierDesChargesEditor() {
     setObjectives([...objectives, newObjective]);
   };
 
-  const _updateObjective = (
+  const updateObjective = (
     id: string,
     field: keyof ProjectObjective,
     value: string | "high" | "medium" | "low"
@@ -375,7 +365,7 @@ export function CahierDesChargesEditor() {
     setDeliverables([...deliverables, newDeliverable]);
   };
 
-  const _updateDeliverable = (
+  const updateDeliverable = (
     id: string,
     field: keyof Deliverable,
     value: string
@@ -406,7 +396,7 @@ export function CahierDesChargesEditor() {
     setMilestones([...milestones, newMilestone]);
   };
 
-  const _updateMilestone = (
+  const updateMilestone = (
     id: string,
     field: keyof Milestone,
     value: string | string[]
@@ -434,7 +424,7 @@ export function CahierDesChargesEditor() {
     setFunctionalRequirements([...functionalRequirements, newRequirement]);
   };
 
-  const _updateFunctionalRequirement = (
+  const updateFunctionalRequirement = (
     id: string,
     field: keyof FunctionalRequirement,
     value: string | "critical" | "high" | "medium" | "low"
@@ -464,7 +454,7 @@ export function CahierDesChargesEditor() {
     setTechnicalRequirements([...technicalRequirements, newRequirement]);
   };
 
-  const _updateTechnicalRequirement = (
+  const updateTechnicalRequirement = (
     id: string,
     field: keyof TechnicalRequirement,
     value: string | "critical" | "high" | "medium" | "low"
@@ -493,7 +483,7 @@ export function CahierDesChargesEditor() {
     setQualityRequirements([...qualityRequirements, newRequirement]);
   };
 
-  const _updateQualityRequirement = (
+  const updateQualityRequirement = (
     id: string,
     field: keyof QualityRequirement,
     value:
@@ -531,7 +521,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const _updateBudgetItem = (
+  const updateBudgetItem = (
     id: string,
     field: keyof BudgetItem,
     value: string | number
@@ -567,7 +557,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const _updatePaymentMilestone = (
+  const updatePaymentMilestone = (
     id: string,
     field: keyof PaymentMilestone,
     value: string | number
@@ -606,7 +596,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const _updateTimelinePhase = (
+  const updateTimelinePhase = (
     id: string,
     field: keyof TimelinePhase,
     value: string | string[]
@@ -639,7 +629,7 @@ export function CahierDesChargesEditor() {
     setRisks([...risks, newRisk]);
   };
 
-  const _updateRisk = (
+  const updateRisk = (
     id: string,
     field: keyof Risk,
     value: string | "high" | "medium" | "low"
@@ -703,7 +693,6 @@ export function CahierDesChargesEditor() {
               (s as HTMLElement).style.display = "block";
             }
           });
-
 
           // Capture the current section
           const canvas = await html2canvas(section as HTMLElement, {
@@ -775,10 +764,6 @@ export function CahierDesChargesEditor() {
       }
     }
   };
-
-  function updateApproval(field: keyof Approval, value: string): void {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <div className="flex flex-col h-full">
@@ -887,50 +872,52 @@ export function CahierDesChargesEditor() {
             setApproval={setApproval}
             setAppendices={setAppendices}
             addTeamMember={addTeamMember}
-            _updateTeamMember={_updateTeamMember}
+            _updateTeamMember={updateTeamMember}
             removeTeamMember={removeTeamMember}
             addObjective={addObjective}
-            _updateObjective={_updateObjective}
+            _updateObjective={updateObjective}
             removeObjective={removeObjective}
             addDeliverable={addDeliverable}
-            _updateDeliverable={_updateDeliverable}
+            _updateDeliverable={updateDeliverable}
             removeDeliverable={removeDeliverable}
             addMilestone={addMilestone}
-            _updateMilestone={_updateMilestone}
+            _updateMilestone={updateMilestone}
             removeMilestone={removeMilestone}
             addFunctionalRequirement={addFunctionalRequirement}
-            _updateFunctionalRequirement={_updateFunctionalRequirement}
+            _updateFunctionalRequirement={updateFunctionalRequirement}
             removeFunctionalRequirement={removeFunctionalRequirement}
             addTechnicalRequirement={addTechnicalRequirement}
-            _updateTechnicalRequirement={_updateTechnicalRequirement}
+            _updateTechnicalRequirement={updateTechnicalRequirement}
             removeTechnicalRequirement={removeTechnicalRequirement}
             addQualityRequirement={addQualityRequirement}
-            _updateQualityRequirement={_updateQualityRequirement}
+            _updateQualityRequirement={updateQualityRequirement}
             removeQualityRequirement={removeQualityRequirement}
             addBudgetItem={addBudgetItem}
-            _updateBudgetItem={_updateBudgetItem}
+            _updateBudgetItem={updateBudgetItem}
             removeBudgetItem={removeBudgetItem}
             addPaymentMilestone={addPaymentMilestone}
-            _updatePaymentMilestone={_updatePaymentMilestone}
+            _updatePaymentMilestone={updatePaymentMilestone}
             removePaymentMilestone={removePaymentMilestone}
             addTimelinePhase={addTimelinePhase}
-            _updateTimelinePhase={_updateTimelinePhase}
+            _updateTimelinePhase={updateTimelinePhase}
             removeTimelinePhase={removeTimelinePhase}
             addRisk={addRisk}
-            _updateRisk={_updateRisk}
+            _updateRisk={updateRisk}
             removeRisk={removeRisk}
             calculateTotalBudget={calculateTotalBudget}
             calculateTotalPayments={calculateTotalPayments}
-            // il n y a pas de updateTimeline
-            // updateTimeline={updateTimeline}
-            // Property '_updateTimeline' is missing in type
             _updateTimeline={function (
               field: keyof Timeline,
               value: string | Date
             ): void {
               throw new Error("Function not implemented.");
             }}
-            updateApproval={updateApproval}
+            updateApproval={function (
+              field: keyof Approval,
+              value: string
+            ): void {
+              throw new Error("Function not implemented.");
+            }}
           />
         </div>
       </div>
