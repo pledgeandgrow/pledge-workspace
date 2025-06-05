@@ -1,6 +1,5 @@
 "use client";
 
-import { DashboardFooter } from "@/components/dashboard/DashboardFooter";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DocSidebar } from "@/components/documentation/DocSidebar";
 
