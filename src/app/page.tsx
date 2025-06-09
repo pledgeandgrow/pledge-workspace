@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: "An integrated workspace with tools to facilitate your work and boost productivity",
 };
 
+
 export default function Home() {
   return <HomeContent />;
 }

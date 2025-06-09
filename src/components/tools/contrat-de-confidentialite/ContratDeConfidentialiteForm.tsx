@@ -9,34 +9,42 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ContratDeConfidentialite, PartyInfo, ConfidentialityScope, LegalTerms, Obligations } from "./types";
+import {
+  ContratDeConfidentialite,
+  PartyInfo,
+  ConfidentialityScope,
+  LegalTerms,
+  Obligations,
+} from "./types";
 
 interface ContratDeConfidentialiteFormProps {
   contratDeConfidentialite: ContratDeConfidentialite;
-  onDisclosingPartyChange: (info: PartyInfo) => void;
-  onReceivingPartyChange: (info: PartyInfo) => void;
-  onScopeChange: (scope: ConfidentialityScope) => void;
-  onLegalTermsChange: (terms: LegalTerms) => void;
-  onObligationsChange: (obligations: Obligations) => void;
-  onReciprocalChange: (reciprocal: boolean) => void;
+  setDisclosingPartyChange: (info: PartyInfo) => void;
+  setReceivingPartyChange: (info: PartyInfo) => void;
+  setScopeChange: (scope: ConfidentialityScope) => void;
+  setLegalTermsChange: (terms: LegalTerms) => void;
+  setObligationsChange: (obligations: Obligations) => void;
+  setReciprocalChange: (reciprocal: boolean) => void;
 }
 
 export function ContratDeConfidentialiteForm({
   contratDeConfidentialite,
-  onDisclosingPartyChange,
-  onReceivingPartyChange,
-  onScopeChange,
-  onLegalTermsChange,
-  onObligationsChange,
+  setDisclosingPartyChange,
+  setReceivingPartyChange,
+  setScopeChange,
+  setLegalTermsChange,
+  setObligationsChange,
   // onReciprocalChange is currently unused but kept for future implementation
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onReciprocalChange,
+  setReciprocalChange,
 }: ContratDeConfidentialiteFormProps) {
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg shadow text-black">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="disclosing-party">
-          <AccordionTrigger className="text-black font-medium">Partie divulgatrice</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Partie divulgatrice
+          </AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
               <div className="space-y-3">
@@ -45,10 +53,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="disclosing-name"
                   value={contratDeConfidentialite.disclosingParty.name}
-                  onChange={(e) => onDisclosingPartyChange({
-                    ...contratDeConfidentialite.disclosingParty,
-                    name: e.target.value,
-                  })}
+                  onChange={(e) =>
+                   setDisclosingPartyChange({
+                      ...contratDeConfidentialite.disclosingParty,
+                      name: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -57,10 +67,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="disclosing-address"
                   value={contratDeConfidentialite.disclosingParty.address}
-                  onChange={(e) => onDisclosingPartyChange({
-                    ...contratDeConfidentialite.disclosingParty,
-                    address: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setDisclosingPartyChange({
+                      ...contratDeConfidentialite.disclosingParty,
+                      address: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -69,10 +81,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="disclosing-email"
                   value={contratDeConfidentialite.disclosingParty.email}
-                  onChange={(e) => onDisclosingPartyChange({
-                    ...contratDeConfidentialite.disclosingParty,
-                    email: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setDisclosingPartyChange({
+                      ...contratDeConfidentialite.disclosingParty,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -81,18 +95,22 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="disclosing-phone"
                   value={contratDeConfidentialite.disclosingParty.phone}
-                  onChange={(e) => onDisclosingPartyChange({
-                    ...contratDeConfidentialite.disclosingParty,
-                    phone: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setDisclosingPartyChange({
+                      ...contratDeConfidentialite.disclosingParty,
+                      phone: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="receiving-party">
-          <AccordionTrigger className="text-black font-medium">Partie réceptrice</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Partie réceptrice
+          </AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
               <div className="space-y-3">
@@ -101,10 +119,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="receiving-name"
                   value={contratDeConfidentialite.receivingParty.name}
-                  onChange={(e) => onReceivingPartyChange({
-                    ...contratDeConfidentialite.receivingParty,
-                    name: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setReceivingPartyChange({
+                      ...contratDeConfidentialite.receivingParty,
+                      name: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -113,10 +133,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="receiving-address"
                   value={contratDeConfidentialite.receivingParty.address}
-                  onChange={(e) => onReceivingPartyChange({
-                    ...contratDeConfidentialite.receivingParty,
-                    address: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setReceivingPartyChange({
+                      ...contratDeConfidentialite.receivingParty,
+                      address: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -125,10 +147,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="receiving-email"
                   value={contratDeConfidentialite.receivingParty.email}
-                  onChange={(e) => onReceivingPartyChange({
-                    ...contratDeConfidentialite.receivingParty,
-                    email: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setReceivingPartyChange({
+                      ...contratDeConfidentialite.receivingParty,
+                      email: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-3">
@@ -137,43 +161,57 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="receiving-phone"
                   value={contratDeConfidentialite.receivingParty.phone}
-                  onChange={(e) => onReceivingPartyChange({
-                    ...contratDeConfidentialite.receivingParty,
-                    phone: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setReceivingPartyChange({
+                      ...contratDeConfidentialite.receivingParty,
+                      phone: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="scope-info">
-          <AccordionTrigger className="text-black font-medium">Portée de la confidentialité</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Portée de la confidentialité
+          </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 mt-3">
               <div className="space-y-3">
-                <Label htmlFor="confidential-description">Description des informations confidentielles</Label>
+                <Label htmlFor="confidential-description">
+                  Description des informations confidentielles
+                </Label>
                 <Textarea
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="confidential-description"
-                  value={contratDeConfidentialite.scope.confidentialInfoDescription}
-                  onChange={(e) => onScopeChange({
-                    ...contratDeConfidentialite.scope,
-                    confidentialInfoDescription: e.target.value,
-                  })}
+                  value={
+                    contratDeConfidentialite.scope.confidentialInfoDescription
+                  }
+                  onChange={(e) =>
+                    setScopeChange({
+                      ...contratDeConfidentialite.scope,
+                      confidentialInfoDescription: e.target.value,
+                    })
+                  }
                   rows={4}
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="confidential-purpose">Objectif de la divulgation</Label>
+                <Label htmlFor="confidential-purpose">
+                  Objectif de la divulgation
+                </Label>
                 <Textarea
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="confidential-purpose"
                   value={contratDeConfidentialite.scope.purpose}
-                  onChange={(e) => onScopeChange({
-                    ...contratDeConfidentialite.scope,
-                    purpose: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setScopeChange({
+                      ...contratDeConfidentialite.scope,
+                      purpose: e.target.value,
+                    })
+                  }
                   rows={3}
                 />
               </div>
@@ -183,10 +221,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="excluded-info"
                   value={contratDeConfidentialite.scope.excludedInfo}
-                  onChange={(e) => onScopeChange({
-                    ...contratDeConfidentialite.scope,
-                    excludedInfo: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setScopeChange({
+                      ...contratDeConfidentialite.scope,
+                      excludedInfo: e.target.value,
+                    })
+                  }
                   rows={3}
                 />
               </div>
@@ -198,13 +238,15 @@ export function ContratDeConfidentialiteForm({
                     id="duration-value"
                     type="number"
                     value={contratDeConfidentialite.scope.duration.value}
-                    onChange={(e) => onScopeChange({
-                      ...contratDeConfidentialite.scope,
-                      duration: {
-                        ...contratDeConfidentialite.scope.duration,
-                        value: parseInt(e.target.value),
-                      },
-                    })}
+                    onChange={(e) =>
+                      setScopeChange({
+                        ...contratDeConfidentialite.scope,
+                        duration: {
+                          ...contratDeConfidentialite.scope.duration,
+                          value: parseInt(e.target.value),
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-3">
@@ -213,56 +255,74 @@ export function ContratDeConfidentialiteForm({
                     className="text-black bg-white border-gray-300 focus:border-blue-500"
                     id="duration-unit"
                     value={contratDeConfidentialite.scope.duration.unit}
-                    onChange={(e) => onScopeChange({
-                      ...contratDeConfidentialite.scope,
-                      duration: {
-                        ...contratDeConfidentialite.scope.duration,
-                        unit: e.target.value as "months" | "years",
-                      },
-                    })}
+                    onChange={(e) =>
+                      setScopeChange({
+                        ...contratDeConfidentialite.scope,
+                        duration: {
+                          ...contratDeConfidentialite.scope.duration,
+                          unit: e.target.value as "months" | "years",
+                        },
+                      })
+                    }
                   />
                 </div>
               </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="obligations">
-          <AccordionTrigger className="text-black font-medium">Obligations</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Obligations
+          </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 mt-3">
               <div className="space-y-3">
-                <Label htmlFor="disclosure-restrictions">Restrictions de divulgation</Label>
+                <Label htmlFor="disclosure-restrictions">
+                  Restrictions de divulgation
+                </Label>
                 <Textarea
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="disclosure-restrictions"
-                  value={contratDeConfidentialite.obligations.disclosureRestrictions}
-                  onChange={(e) => onObligationsChange({
-                    ...contratDeConfidentialite.obligations,
-                    disclosureRestrictions: e.target.value,
-                  })}
+                  value={
+                    contratDeConfidentialite.obligations.disclosureRestrictions
+                  }
+                  onChange={(e) =>
+                    setObligationsChange({
+                      ...contratDeConfidentialite.obligations,
+                      disclosureRestrictions: e.target.value,
+                    })
+                  }
                   rows={3}
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="protection-measures">Mesures de protection</Label>
+                <Label htmlFor="protection-measures">
+                  Mesures de protection
+                </Label>
                 <Textarea
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="protection-measures"
-                  value={contratDeConfidentialite.obligations.protectionMeasures}
-                  onChange={(e) => onObligationsChange({
-                    ...contratDeConfidentialite.obligations,
-                    protectionMeasures: e.target.value,
-                  })}
+                  value={
+                    contratDeConfidentialite.obligations.protectionMeasures
+                  }
+                  onChange={(e) =>
+                    setObligationsChange({
+                      ...contratDeConfidentialite.obligations,
+                      protectionMeasures: e.target.value,
+                    })
+                  }
                   rows={3}
                 />
               </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="legal-terms">
-          <AccordionTrigger className="text-black font-medium">Termes légaux</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Termes légaux
+          </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 mt-3">
               <div className="space-y-3">
@@ -271,23 +331,29 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="applicable-law"
                   value={contratDeConfidentialite.legalTerms.applicableLaw}
-                  onChange={(e) => onLegalTermsChange({
-                    ...contratDeConfidentialite.legalTerms,
-                    applicableLaw: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setLegalTermsChange({
+                      ...contratDeConfidentialite.legalTerms,
+                      applicableLaw: e.target.value,
+                    })
+                  }
                   placeholder="Ex: Droit français"
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="dispute-resolution">Résolution des litiges</Label>
+                <Label htmlFor="dispute-resolution">
+                  Résolution des litiges
+                </Label>
                 <Input
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="dispute-resolution"
                   value={contratDeConfidentialite.legalTerms.disputeResolution}
-                  onChange={(e) => onLegalTermsChange({
-                    ...contratDeConfidentialite.legalTerms,
-                    disputeResolution: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setLegalTermsChange({
+                      ...contratDeConfidentialite.legalTerms,
+                      disputeResolution: e.target.value,
+                    })
+                  }
                   placeholder="Ex: Tribunal de Commerce de Paris"
                 />
               </div>
@@ -297,10 +363,12 @@ export function ContratDeConfidentialiteForm({
                   className="text-black bg-white border-gray-300 focus:border-blue-500"
                   id="penalties"
                   value={contratDeConfidentialite.legalTerms.penalties}
-                  onChange={(e) => onLegalTermsChange({
-                    ...contratDeConfidentialite.legalTerms,
-                    penalties: e.target.value,
-                  })}
+                  onChange={(e) =>
+                    setLegalTermsChange({
+                      ...contratDeConfidentialite.legalTerms,
+                      penalties: e.target.value,
+                    })
+                  }
                   rows={3}
                   placeholder="Ex: En cas de violation, des dommages-intérêts d'un montant de..."
                 />
@@ -308,9 +376,11 @@ export function ContratDeConfidentialiteForm({
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="additional-clauses">
-          <AccordionTrigger className="text-black font-medium">Clauses additionnelles</AccordionTrigger>
+          <AccordionTrigger className="text-black font-medium">
+            Clauses additionnelles
+          </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-3 mt-3">
               <Label htmlFor="additional-clauses">Clauses additionnelles</Label>
@@ -318,10 +388,12 @@ export function ContratDeConfidentialiteForm({
                 className="text-black bg-white border-gray-300 focus:border-blue-500"
                 id="additional-clauses"
                 value={contratDeConfidentialite.legalTerms.additionalClauses}
-                onChange={(e) => onLegalTermsChange({
-                  ...contratDeConfidentialite.legalTerms,
-                  additionalClauses: e.target.value,
-                })}
+                onChange={(e) =>
+                  setLegalTermsChange({
+                    ...contratDeConfidentialite.legalTerms,
+                    additionalClauses: e.target.value,
+                  })
+                }
                 rows={5}
               />
             </div>

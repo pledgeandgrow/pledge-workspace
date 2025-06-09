@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface ProjectInfo {
   title: string;
   reference: string;
@@ -138,6 +140,7 @@ export interface TimelinePhase {
 }
 
 export interface Risk {
+  title: ReactNode;
   id: string;
   description: string;
   impact: "high" | "medium" | "low";

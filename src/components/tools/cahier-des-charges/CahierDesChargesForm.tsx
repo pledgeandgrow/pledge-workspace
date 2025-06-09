@@ -19,11 +19,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Plus, Trash2 } from "lucide-react";
-import { 
-  CahierDesCharges, 
-  ProjectInfo, 
-  ClientInfo, 
-  CompanyInfo, 
+import {
+  CahierDesCharges,
+  ProjectInfo,
+  ClientInfo,
+  CompanyInfo,
   TeamMember,
   ProjectObjective,
   ProjectScope,
@@ -32,13 +32,13 @@ import {
   FunctionalRequirement,
   TechnicalRequirement,
   QualityRequirement,
-  Budget, 
+  Budget,
   BudgetItem,
   PaymentMilestone,
   Timeline,
   TimelinePhase,
   Risk,
-  Approval
+  Approval,
 } from "./types";
 
 interface CahierDesChargesFormProps {
@@ -60,55 +60,115 @@ interface CahierDesChargesFormProps {
   setApproval: (approval: Approval) => void;
   setAppendices: (appendices: string) => void;
   addTeamMember: () => void;
-  updateTeamMember: (id: string, field: keyof TeamMember, value: string) => void;
+  _updateTeamMember: (
+    id: string,
+    field: keyof TeamMember,
+    value: string
+  ) => void;
   removeTeamMember: (id: string) => void;
   addObjective: () => void;
-  _updateObjective: (id: string, field: keyof ProjectObjective, value: string) => void;
+  _updateObjective: (
+    id: string,
+    field: keyof ProjectObjective,
+    value: string
+  ) => void;
   removeObjective: (id: string) => void;
   addDeliverable: () => void;
-  updateDeliverable: (id: string, field: keyof Deliverable, value: string) => void;
+  _updateDeliverable: (
+    id: string,
+    field: keyof Deliverable,
+    value: string
+  ) => void;
   removeDeliverable: (id: string) => void;
   addMilestone: () => void;
-  _updateMilestone: (id: string, field: keyof Milestone, value: string | Date) => void;
+  _updateMilestone: (
+    id: string,
+    field: keyof Milestone,
+    value: string | string[]
+  ) => void;
   removeMilestone: (id: string) => void;
   addFunctionalRequirement: () => void;
-  _updateFunctionalRequirement: (id: string, field: keyof FunctionalRequirement, value: string) => void;
+  _updateFunctionalRequirement: (
+    id: string,
+    field: keyof FunctionalRequirement,
+    value: string
+  ) => void;
   removeFunctionalRequirement: (id: string) => void;
   addTechnicalRequirement: () => void;
-  _updateTechnicalRequirement: (id: string, field: keyof TechnicalRequirement, value: string) => void;
+  _updateTechnicalRequirement: (
+    id: string,
+    field: keyof TechnicalRequirement,
+    value: string
+  ) => void;
   removeTechnicalRequirement: (id: string) => void;
   addQualityRequirement: () => void;
-  _updateQualityRequirement: (id: string, field: keyof QualityRequirement, value: string) => void;
+  _updateQualityRequirement: (
+    id: string,
+    field: keyof QualityRequirement,
+    value: string
+  ) => void;
   removeQualityRequirement: (id: string) => void;
   addBudgetItem: () => void;
-  _updateBudgetItem: (id: string, field: keyof BudgetItem, value: string | number) => void;
+  _updateBudgetItem: (
+    id: string,
+    field: keyof BudgetItem,
+    value: string | number
+  ) => void;
   removeBudgetItem: (id: string) => void;
   addPaymentMilestone: () => void;
-  _updatePaymentMilestone: (id: string, field: keyof PaymentMilestone, value: string | number | Date) => void;
+  _updatePaymentMilestone: (
+    id: string,
+    field: keyof PaymentMilestone,
+    value: string | number
+  ) => void;
   removePaymentMilestone: (id: string) => void;
   _updateTimeline: (field: keyof Timeline, value: string | Date) => void;
   addTimelinePhase: () => void;
-  _updateTimelinePhase: (id: string, field: keyof TimelinePhase, value: string | Date) => void;
+  _updateTimelinePhase: (
+    id: string,
+    field: keyof TimelinePhase,
+    value: string | string[]
+  ) => void;
   removeTimelinePhase: (id: string) => void;
   addRisk: () => void;
   _updateRisk: (id: string, field: keyof Risk, value: string) => void;
   removeRisk: (id: string) => void;
   updateApproval: (field: keyof Approval, value: string) => void;
   calculateTotalPayments: () => number;
+  calculateTotalBudget: () => number;
 }
 
 export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
   // Alias cahierDesCharges as data for easier reference in the component
   const data = props.cahierDesCharges;
 
+  // Helper function to update data through props
+  const updateData = (updates: Partial<CahierDesCharges>) => {
+    // Update each field through the appropriate setter
+    if (updates.milestones) props.setMilestones(updates.milestones);
+    if (updates.deliverables) props.setDeliverables(updates.deliverables);
+    if (updates.functionalRequirements)
+      props.setFunctionalRequirements(updates.functionalRequirements);
+    if (updates.technicalRequirements)
+      props.setTechnicalRequirements(updates.technicalRequirements);
+    if (updates.qualityRequirements)
+      props.setQualityRequirements(updates.qualityRequirements);
+    if (updates.budget) props.setBudget(updates.budget);
+    if (updates.timeline) props.setTimeline(updates.timeline);
+    if (updates.risks) props.setRisks(updates.risks);
+  };
+
   // Helper function to create a new ID
   const createId = () => `id-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
   // Helper function to update a specific field in the project info
-  const updateProjectInfo = (field: keyof ProjectInfo, value: string | number | Date | Record<string, unknown>) => {
+  const updateProjectInfo = (
+    field: keyof ProjectInfo,
+    value: string | number | Date | Record<string, unknown>
+  ) => {
     props.setProjectInfo({
       ...data.projectInfo,
-      [field]: value
+      [field]: value,
     });
   };
 
@@ -142,10 +202,16 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
   };
 
   // Helper function to update a team member
-  const updateTeamMember = (id: string, field: keyof TeamMember, value: string) => {
-    props.setTeamMembers(data.teamMembers.map((member) =>
-      member.id === id ? { ...member, [field]: value } : member
-    ));
+  const updateTeamMember = (
+    id: string,
+    field: keyof TeamMember,
+    value: string
+  ) => {
+    props.setTeamMembers(
+      data.teamMembers.map((member) =>
+        member.id === id ? { ...member, [field]: value } : member
+      )
+    );
   };
 
   // Helper function to remove a team member
@@ -168,21 +234,31 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update an objective
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateObjective = (id: string, field: keyof ProjectObjective, value: string) => {
-    props.setObjectives(data.objectives.map((objective) =>
-      objective.id === id ? { ...objective, [field]: value } : objective
-    ));
+  const _updateObjective = (
+    id: string,
+    field: keyof ProjectObjective,
+    value: string
+  ) => {
+    props.setObjectives(
+      data.objectives.map((objective) =>
+        objective.id === id ? { ...objective, [field]: value } : objective
+      )
+    );
   };
 
   // Helper function to remove an objective
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeObjective = (id: string) => { // Prefixed with underscore as it's currently unused
-    props.setObjectives(data.objectives.filter((objective) => objective.id !== id));
+  const _removeObjective = (id: string) => {
+    // Prefixed with underscore as it's currently unused
+    props.setObjectives(
+      data.objectives.filter((objective) => objective.id !== id)
+    );
   };
 
   // Helper function to update project scope
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateScope = (field: keyof ProjectScope, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateScope = (field: keyof ProjectScope, value: string) => {
+    // Prefixed with underscore as it's currently unused
     props.setScope({
       ...data.scope,
       [field]: value,
@@ -191,7 +267,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to add a deliverable
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addDeliverable = () => { // Prefixed with underscore as it's currently unused
+  const _addDeliverable = () => {
+    // Prefixed with underscore as it's currently unused
     const newDeliverable: Deliverable = {
       id: createId(),
       title: "",
@@ -207,7 +284,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a deliverable
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateDeliverable = (id: string, field: keyof Deliverable, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateDeliverable = (
+    id: string,
+    field: keyof Deliverable,
+    value: string
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       deliverables: data.deliverables.map((deliverable) =>
         deliverable.id === id ? { ...deliverable, [field]: value } : deliverable
@@ -217,15 +299,19 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a deliverable
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeDeliverable = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeDeliverable = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
-      deliverables: data.deliverables.filter((deliverable) => deliverable.id !== id),
+      deliverables: data.deliverables.filter(
+        (deliverable) => deliverable.id !== id
+      ),
     });
   };
 
   // Helper function to add a milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addMilestone = () => { // Prefixed with underscore as it's currently unused
+  const _addMilestone = () => {
+    // Prefixed with underscore as it's currently unused
     const newMilestone: Milestone = {
       id: createId(),
       title: "",
@@ -240,17 +326,27 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateMilestone = (id: string, field: keyof Milestone, value: string | Date) => { // Prefixed with underscore as it's currently unused
+  const _updateMilestone = (
+    id: string,
+    field: keyof Milestone,
+    value: string | Date | string[]
+  ) => {
+    // Prefixed with underscore as it's currently unused
+    const processedValue =
+      value instanceof Date ? value.toISOString().split("T")[0] : value;
     updateData({
       milestones: data.milestones.map((milestone) =>
-        milestone.id === id ? { ...milestone, [field]: value } : milestone
+        milestone.id === id
+          ? { ...milestone, [field]: processedValue }
+          : milestone
       ),
     });
   };
 
   // Helper function to remove a milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeMilestone = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeMilestone = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       milestones: data.milestones.filter((milestone) => milestone.id !== id),
     });
@@ -258,7 +354,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to add a functional requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addFunctionalRequirement = () => { // Prefixed with underscore as it's currently unused
+  const _addFunctionalRequirement = () => {
+    // Prefixed with underscore as it's currently unused
     const newRequirement: FunctionalRequirement = {
       id: createId(),
       category: "",
@@ -274,7 +371,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a functional requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateFunctionalRequirement = (id: string, field: keyof FunctionalRequirement, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateFunctionalRequirement = (
+    id: string,
+    field: keyof FunctionalRequirement,
+    value: string
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       functionalRequirements: data.functionalRequirements.map((req) =>
         req.id === id ? { ...req, [field]: value } : req
@@ -284,15 +386,19 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a functional requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeFunctionalRequirement = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeFunctionalRequirement = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
-      functionalRequirements: data.functionalRequirements.filter((req) => req.id !== id),
+      functionalRequirements: data.functionalRequirements.filter(
+        (req) => req.id !== id
+      ),
     });
   };
 
   // Helper function to add a technical requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addTechnicalRequirement = () => { // Prefixed with underscore as it's currently unused
+  const _addTechnicalRequirement = () => {
+    // Prefixed with underscore as it's currently unused
     const newRequirement: TechnicalRequirement = {
       id: createId(),
       category: "",
@@ -308,7 +414,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a technical requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateTechnicalRequirement = (id: string, field: keyof TechnicalRequirement, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateTechnicalRequirement = (
+    id: string,
+    field: keyof TechnicalRequirement,
+    value: string
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       technicalRequirements: data.technicalRequirements.map((req) =>
         req.id === id ? { ...req, [field]: value } : req
@@ -318,15 +429,19 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a technical requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeTechnicalRequirement = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeTechnicalRequirement = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
-      technicalRequirements: data.technicalRequirements.filter((req) => req.id !== id),
+      technicalRequirements: data.technicalRequirements.filter(
+        (req) => req.id !== id
+      ),
     });
   };
 
   // Helper function to add a quality requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addQualityRequirement = () => { // Prefixed with underscore as it's currently unused
+  const _addQualityRequirement = () => {
+    // Prefixed with underscore as it's currently unused
     const newRequirement: QualityRequirement = {
       id: createId(),
       category: "performance",
@@ -341,7 +456,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a quality requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateQualityRequirement = (id: string, field: keyof QualityRequirement, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateQualityRequirement = (
+    id: string,
+    field: keyof QualityRequirement,
+    value: string
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       qualityRequirements: data.qualityRequirements.map((req) =>
         req.id === id ? { ...req, [field]: value } : req
@@ -351,15 +471,19 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a quality requirement
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeQualityRequirement = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeQualityRequirement = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
-      qualityRequirements: data.qualityRequirements.filter((req) => req.id !== id),
+      qualityRequirements: data.qualityRequirements.filter(
+        (req) => req.id !== id
+      ),
     });
   };
 
   // Helper function to add a budget item
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addBudgetItem = () => { // Prefixed with underscore as it's currently unused
+  const _addBudgetItem = () => {
+    // Prefixed with underscore as it's currently unused
     const newItem: BudgetItem = {
       id: createId(),
       description: "",
@@ -376,7 +500,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a budget item
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateBudgetItem = (id: string, field: keyof BudgetItem, value: string | number) => { // Prefixed with underscore as it's currently unused
+  const _updateBudgetItem = (
+    id: string,
+    field: keyof BudgetItem,
+    value: string | number
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       budget: {
         ...data.budget,
@@ -389,18 +518,22 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a budget item
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeBudgetItem = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeBudgetItem = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       budget: {
         ...data.budget,
-        breakdown: data.budget.breakdown.filter((item: BudgetItem) => item.id !== id),
+        breakdown: data.budget.breakdown.filter(
+          (item: BudgetItem) => item.id !== id
+        ),
       },
     });
   };
 
   // Helper function to add a payment milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addPaymentMilestone = () => { // Prefixed with underscore as it's currently unused
+  const _addPaymentMilestone = () => {
+    // Prefixed with underscore as it's currently unused
     const newMilestone: PaymentMilestone = {
       id: createId(),
       description: "",
@@ -418,12 +551,18 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a payment milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updatePaymentMilestone = (id: string, field: keyof PaymentMilestone, value: string | number | Date) => { // Prefixed with underscore as it's currently unused
+  const _updatePaymentMilestone = (
+    id: string,
+    field: keyof PaymentMilestone,
+    value: string | number | Date
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       budget: {
         ...data.budget,
-        paymentSchedule: data.budget.paymentSchedule.map((milestone: PaymentMilestone) =>
-          milestone.id === id ? { ...milestone, [field]: value } : milestone
+        paymentSchedule: data.budget.paymentSchedule.map(
+          (milestone: PaymentMilestone) =>
+            milestone.id === id ? { ...milestone, [field]: value } : milestone
         ),
       },
     });
@@ -431,18 +570,22 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a payment milestone
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removePaymentMilestone = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removePaymentMilestone = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       budget: {
         ...data.budget,
-        paymentSchedule: data.budget.paymentSchedule.filter((milestone: PaymentMilestone) => milestone.id !== id),
+        paymentSchedule: data.budget.paymentSchedule.filter(
+          (milestone: PaymentMilestone) => milestone.id !== id
+        ),
       },
     });
   };
 
   // Helper function to update timeline
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateTimeline = (field: keyof Timeline, value: string | Date) => { // Prefixed with underscore as it's currently unused
+  const _updateTimeline = (field: keyof Timeline, value: string | Date) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       timeline: {
         ...data.timeline,
@@ -453,7 +596,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to add a timeline phase
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addTimelinePhase = () => { // Prefixed with underscore as it's currently unused
+  const _addTimelinePhase = () => {
+    // Prefixed with underscore as it's currently unused
     const newPhase: TimelinePhase = {
       id: createId(),
       title: "",
@@ -472,7 +616,12 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a timeline phase
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateTimelinePhase = (id: string, field: keyof TimelinePhase, value: string | Date) => { // Prefixed with underscore as it's currently unused
+  const _updateTimelinePhase = (
+    id: string,
+    field: keyof TimelinePhase,
+    value: string | Date
+  ) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       timeline: {
         ...data.timeline,
@@ -485,7 +634,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a timeline phase
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeTimelinePhase = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeTimelinePhase = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       timeline: {
         ...data.timeline,
@@ -496,7 +646,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to add a risk
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _addRisk = () => { // Prefixed with underscore as it's currently unused
+  const _addRisk = () => {
+    // Prefixed with underscore as it's currently unused
     const newRisk: Risk = {
       id: createId(),
       description: "",
@@ -504,6 +655,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
       probability: "medium",
       mitigation: "",
       contingency: "",
+      title: undefined,
     };
     updateData({
       risks: [...data.risks, newRisk],
@@ -512,7 +664,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update a risk
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateRisk = (id: string, field: keyof Risk, value: string) => { // Prefixed with underscore as it's currently unused
+  const _updateRisk = (id: string, field: keyof Risk, value: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       risks: data.risks.map((risk) =>
         risk.id === id ? { ...risk, [field]: value } : risk
@@ -522,7 +675,8 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to remove a risk
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _removeRisk = (id: string) => { // Prefixed with underscore as it's currently unused
+  const _removeRisk = (id: string) => {
+    // Prefixed with underscore as it's currently unused
     updateData({
       risks: data.risks.filter((risk) => risk.id !== id),
     });
@@ -530,7 +684,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
   // Helper function to update approval
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _updateApproval = (field: keyof Approval, value: string | Date) => { 
+  const _updateApproval = (field: keyof Approval, value: string | Date) => {
     updateData({
       approval: {
         ...data.approval,
@@ -539,9 +693,15 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
     });
   };
 
+
   return (
     <div className="space-y-8 p-4 overflow-y-auto max-h-[calc(100vh-120px)]">
-      <Accordion type="single" collapsible className="w-full" defaultValue="project-info">
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        defaultValue="project-info"
+      >
         {/* Project Information */}
         <AccordionItem value="project-info">
           <AccordionTrigger className="text-lg font-semibold">
@@ -563,7 +723,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="project-reference"
                     value={data.projectInfo.reference}
-                    onChange={(e) => updateProjectInfo("reference", e.target.value)}
+                    onChange={(e) =>
+                      updateProjectInfo("reference", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -582,14 +744,18 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="project-version"
                     value={data.projectInfo.version}
-                    onChange={(e) => updateProjectInfo("version", e.target.value)}
+                    onChange={(e) =>
+                      updateProjectInfo("version", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="project-status">Statut</Label>
                   <Select
                     value={data.projectInfo.status}
-                    onValueChange={(value) => updateProjectInfo("status", value)}
+                    onValueChange={(value) =>
+                      updateProjectInfo("status", value)
+                    }
                   >
                     <SelectTrigger id="project-status">
                       <SelectValue placeholder="Sélectionner un statut" />
@@ -637,7 +803,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="client-contact"
                     value={data.clientInfo.contactPerson}
-                    onChange={(e) => updateClientInfo("contactPerson", e.target.value)}
+                    onChange={(e) =>
+                      updateClientInfo("contactPerson", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -702,7 +870,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-contact"
                     value={data.companyInfo.contactName}
-                    onChange={(e) => updateCompanyInfo("contactName", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("contactName", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -712,7 +882,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-address"
                     value={data.companyInfo.address}
-                    onChange={(e) => updateCompanyInfo("address", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("address", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -720,7 +892,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-zip-city"
                     value={data.companyInfo.zipCity}
-                    onChange={(e) => updateCompanyInfo("zipCity", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("zipCity", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -730,15 +904,21 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-country"
                     value={data.companyInfo.country}
-                    onChange={(e) => updateCompanyInfo("country", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("country", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-number">Numéro d&apos;entreprise</Label>
+                  <Label htmlFor="company-number">
+                    Numéro d&apos;entreprise
+                  </Label>
                   <Input
                     id="company-number"
                     value={data.companyInfo.companyNumber}
-                    onChange={(e) => updateCompanyInfo("companyNumber", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("companyNumber", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -746,7 +926,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-activity"
                     value={data.companyInfo.activityCode}
-                    onChange={(e) => updateCompanyInfo("activityCode", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("activityCode", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -756,7 +938,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                   <Input
                     id="company-vat"
                     value={data.companyInfo.vatNumber}
-                    onChange={(e) => updateCompanyInfo("vatNumber", e.target.value)}
+                    onChange={(e) =>
+                      updateCompanyInfo("vatNumber", e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -791,7 +975,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
 
         {/* Additional sections would be added here following the same pattern */}
         {/* For brevity, I'm including just the first few sections */}
-        
+
         {/* Team Members */}
         <AccordionItem value="team-members">
           <AccordionTrigger className="text-lg font-semibold">
@@ -815,7 +999,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                       <Input
                         id={`member-name-${index}`}
                         value={member.name}
-                        onChange={(e) => updateTeamMember(member.id, "name", e.target.value)}
+                        onChange={(e) =>
+                          updateTeamMember(member.id, "name", e.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -823,7 +1009,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                       <Input
                         id={`member-role-${index}`}
                         value={member.role}
-                        onChange={(e) => updateTeamMember(member.id, "role", e.target.value)}
+                        onChange={(e) =>
+                          updateTeamMember(member.id, "role", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -834,7 +1022,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                         id={`member-email-${index}`}
                         type="email"
                         value={member.email}
-                        onChange={(e) => updateTeamMember(member.id, "email", e.target.value)}
+                        onChange={(e) =>
+                          updateTeamMember(member.id, "email", e.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -842,16 +1032,26 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
                       <Input
                         id={`member-phone-${index}`}
                         value={member.phone || ""}
-                        onChange={(e) => updateTeamMember(member.id, "phone", e.target.value)}
+                        onChange={(e) =>
+                          updateTeamMember(member.id, "phone", e.target.value)
+                        }
                       />
                     </div>
                   </div>
                   <div className="space-y-2 mt-4">
-                    <Label htmlFor={`member-responsibilities-${index}`}>Responsabilités</Label>
+                    <Label htmlFor={`member-responsibilities-${index}`}>
+                      Responsabilités
+                    </Label>
                     <Textarea
                       id={`member-responsibilities-${index}`}
                       value={member.responsibilities}
-                      onChange={(e) => updateTeamMember(member.id, "responsibilities", e.target.value)}
+                      onChange={(e) =>
+                        updateTeamMember(
+                          member.id,
+                          "responsibilities",
+                          e.target.value
+                        )
+                      }
                       rows={2}
                     />
                   </div>
@@ -876,7 +1076,9 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionContent>
             <div className="space-y-4 p-2">
               <div className="space-y-2">
-                <Label htmlFor="appendices">Annexes et documents complémentaires</Label>
+                <Label htmlFor="appendices">
+                  Annexes et documents complémentaires
+                </Label>
                 <Textarea
                   id="appendices"
                   value={data.appendices}
