@@ -707,7 +707,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionTrigger className="text-lg font-semibold">
             Information du Projet
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent >
             <div className="space-y-4 p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -787,7 +787,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionTrigger className="text-lg font-semibold">
             Information Client
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent >
             <div className="space-y-4 p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -854,7 +854,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionTrigger className="text-lg font-semibold">
             Information Société
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent >
             <div className="space-y-4 p-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -981,7 +981,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionTrigger className="text-lg font-semibold">
             Équipe Projet
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent >
             <div className="space-y-4 p-2">
               {data.teamMembers.map((member, index) => (
                 <div key={member.id} className="border p-4 rounded-md relative">
@@ -1073,7 +1073,7 @@ export function CahierDesChargesForm(props: CahierDesChargesFormProps) {
           <AccordionTrigger className="text-lg font-semibold">
             Annexes
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent >
             <div className="space-y-4 p-2">
               <div className="space-y-2">
                 <Label htmlFor="appendices">

@@ -1,6 +1,7 @@
 "use client";
 
 import { WorkspaceSidebar } from "./WorkspaceSidebar";
+import { DashboardFooter } from "@/components/dashboard/DashboardFooter";
 
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
@@ -17,11 +18,12 @@ export function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <div className="flex flex-1">
         <WorkspaceSidebar counts={counts} />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
+      <DashboardFooter />
     </div>
   );
 }

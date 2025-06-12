@@ -1,20 +1,15 @@
 "use client";
 
+import { ReactNode } from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardFooter } from "@/components/dashboard/DashboardFooter";
 
-export default function WorkflowsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-background">
       <DashboardSidebar />
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-auto">
-          {children}
-        </div>
+        <div className="flex-1 overflow-auto p-6">{children}</div>
         <DashboardFooter />
       </div>
     </div>
