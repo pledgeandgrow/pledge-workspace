@@ -838,24 +838,26 @@ export function CahierDesChargesEditor() {
             size="sm"
             className="flex items-center space-x-2"
             onClick={async () => {
+              console.log("Payload envoyé à Supabase :", cahierDesCharges); // 👈 important
+            
               const response = await fetch("/api/cahier-des-charges", {
                 method: "POST",
                 body: JSON.stringify(cahierDesCharges),
                 headers: { "Content-Type": "application/json" },
               });
-
+            
               if (response.ok) {
-                toast({
-                  title: "Cahier des charges sauvegardé",
-                  description: "Le document a été sauvegardé avec succès.",
-                });
+                toast({ title: "Cahier des charges sauvegardé", description: "Le document a été sauvegardé avec succès." });
               } else {
+                const error = await response.json(); // 👈 affiche l’erreur exacte
+                console.error("Erreur API Supabase :", error);
                 toast({
                   title: "Erreur",
-                  description: "Échec de la sauvegarde.",
+                  description: error.error || "Échec de la sauvegarde.",
                 });
               }
             }}
+            
           >
             <Save className="h-4 w-4" />
             <span>Sauvegarder</span>
