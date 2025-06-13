@@ -782,7 +782,7 @@ export function CahierDesChargesEditor() {
             size="sm"
             className="flex items-center space-x-2"
             onClick={async () => {
-              console.log("Payload envoyé à Supabase :", cahierDesCharges); // 👈 important
+              console.log("Payload envoyé à Supabase :", cahierDesCharges); 
 
               const response = await fetch("/api/cahier-des-charges", {
                 method: "POST",
@@ -796,7 +796,7 @@ export function CahierDesChargesEditor() {
                   description: "Le document a été sauvegardé avec succès.",
                 });
               } else {
-                const error = await response.json(); // 👈 affiche l’erreur exacte
+                const error = await response.json(); 
                 console.error("Erreur API Supabase :", error);
                 toast({
                   title: "Erreur",

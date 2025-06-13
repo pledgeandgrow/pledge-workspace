@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     console.log("Données reçues dans l'API :", JSON.stringify(reqBody, null, 2));
 
     const { data: inserted, error } = await supabase
-      .from("cahier_des_charges")
+      .from("contrat_de_confidentialite")
       .insert([{ data: reqBody }]);
 
     if (error) {
@@ -15,9 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    console.log("Données insérées :", inserted);
-
-    return NextResponse.json({ message: "Document sauvegardé", inserted });
+    return NextResponse.json({ message: "Contrat sauvegardé", inserted });
   } catch (err: any) {
     console.error("Erreur API :", err);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
