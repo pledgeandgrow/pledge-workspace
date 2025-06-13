@@ -664,127 +664,71 @@ export function CahierDesChargesEditor() {
     );
   };
 
+  
   const exportToPdf = async () => {
-    if (documentRef.current) {
-      console.log("Document found:", documentRef.current); // Vérifie que le DOM est bien référencé
-      const sections = documentRef.current.querySelectorAll(".cdc-section");
-      console.log("Sections found:", sections); // Vérifie que les sections sont trouvées
-      if (!sections || sections.length === 0) {
-        console.error("Could not find document sections");
-        return;
-      }
-    } else {
+    if (!documentRef.current) {
       console.error("documentRef.current is null");
+      return;
     }
 
-    if (documentRef.current) {
-      toast({
-        title: "Génération du PDF",
-        description: "Veuillez patienter pendant la génération du PDF...",
+    toast({
+      title: "Génération du PDF",
+      description: "Veuillez patienter...",
+    });
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+
+    const pages = documentRef.current.querySelectorAll(".pdf-page");
+    if (!pages || pages.length === 0) {
+      console.error("Aucune section .pdf-page trouvée");
+      return;
+    }
+
+    for (let i = 0; i < pages.length; i++) {
+      const el = pages[i] as HTMLElement;
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#fff",
       });
 
-      try {
-        // Create a PDF document
-        const pdf = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-          compress: true,
-        });
+      const imgData = canvas.toDataURL("image/png");
 
-        // Define PDF dimensions and margins
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const margin = 15; // 15mm margins on all sides
+      const ratio = Math.min(
+        (pdfWidth - margin * 2) / canvas.width,
+        (pdfHeight - margin * 2) / canvas.height
+      );
 
-        // Get all sections
-        const sections = documentRef.current.querySelectorAll(".cdc-section");
-        if (!sections || sections.length === 0) {
-          throw new Error("Could not find document sections");
-        }
+      const imgWidth = canvas.width * ratio;
+      const imgHeight = canvas.height * ratio;
 
-        // Process each section
-        for (let i = 0; i < sections.length; i++) {
-          const section = sections[i];
+      const x = (pdfWidth - imgWidth) / 2;
+      const y = margin;
 
-          // Hide all sections except the current one
-          Array.from(sections).forEach((s, index) => {
-            if (index !== i) {
-              (s as HTMLElement).style.display = "none";
-            } else {
-              (s as HTMLElement).style.display = "block";
-            }
-          });
+      if (i > 0) pdf.addPage();
 
-          // Capture the current section
-          const canvas = await html2canvas(section as HTMLElement, {
-            scale: 2,
-            logging: false,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-          });
+      pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
 
-          // Add section to PDF
-          const imgData = canvas.toDataURL("image/png");
-          const imgWidth = canvas.width;
-          const imgHeight = canvas.height;
-
-          // Calculate ratio while ensuring margins
-          const availableWidth = pdfWidth - margin * 2;
-          const availableHeight = pdfHeight - margin * 2;
-          const imgRatio = Math.min(
-            availableWidth / imgWidth,
-            availableHeight / imgHeight
-          );
-
-          // Center the image with margins
-          const imgX = margin + (availableWidth - imgWidth * imgRatio) / 2;
-          const imgY = margin;
-
-          // Add new page for sections after the first one
-          if (i > 0) {
-            pdf.addPage();
-          }
-
-          pdf.addImage(
-            imgData,
-            "PNG",
-            imgX,
-            imgY,
-            imgWidth * imgRatio,
-            imgHeight * imgRatio
-          );
-
-          // Add page number
-          pdf.setFontSize(8);
-          pdf.setTextColor(150, 150, 150);
-          pdf.text(
-            `Page ${i + 1}/${sections.length}`,
-            pdfWidth - 20,
-            pdfHeight - 10
-          );
-        }
-
-        // Restore display of all sections
-        Array.from(sections).forEach((s) => {
-          (s as HTMLElement).style.display = "block";
-        });
-
-        // Save the PDF
-        pdf.save(`${projectInfo.reference}.pdf`);
-
-        toast({
-          title: "PDF généré avec succès",
-          description: `Le PDF a été téléchargé (${sections.length} pages)`,
-        });
-      } catch (error) {
-        console.error("Erreur lors de la génération du PDF:", error);
-        toast({
-          title: "Erreur",
-          description: "Une erreur est survenue lors de la génération du PDF.",
-        });
-      }
+      pdf.setFontSize(8);
+      pdf.setTextColor(150, 150, 150);
+      pdf.text(`Page ${i + 1}/${pages.length}`, pdfWidth - 25, pdfHeight - 10);
     }
+
+    pdf.save(`${projectInfo.reference}.pdf`);
+
+    toast({
+      title: "PDF généré",
+      description: `${pages.length} page(s) générée(s)`,
+    });
   };
 
   function updateApproval(field: keyof Approval, value: string): void {
@@ -839,15 +783,18 @@ export function CahierDesChargesEditor() {
             className="flex items-center space-x-2"
             onClick={async () => {
               console.log("Payload envoyé à Supabase :", cahierDesCharges); // 👈 important
-            
+
               const response = await fetch("/api/cahier-des-charges", {
                 method: "POST",
                 body: JSON.stringify(cahierDesCharges),
                 headers: { "Content-Type": "application/json" },
               });
-            
+
               if (response.ok) {
-                toast({ title: "Cahier des charges sauvegardé", description: "Le document a été sauvegardé avec succès." });
+                toast({
+                  title: "Cahier des charges sauvegardé",
+                  description: "Le document a été sauvegardé avec succès.",
+                });
               } else {
                 const error = await response.json(); // 👈 affiche l’erreur exacte
                 console.error("Erreur API Supabase :", error);
@@ -857,7 +804,6 @@ export function CahierDesChargesEditor() {
                 });
               }
             }}
-            
           >
             <Save className="h-4 w-4" />
             <span>Sauvegarder</span>
