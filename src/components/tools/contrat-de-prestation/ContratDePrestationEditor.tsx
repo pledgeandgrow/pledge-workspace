@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -96,37 +96,45 @@ export function ContratDePrestationEditor() {
       "Préavis de 30 jours par lettre recommandée avec accusé de réception",
   });
 
-  const [contractInfo, setContractInfo] = useState<ContractInfo>({
-    reference: `CONTRAT-${new Date().getFullYear()}-${String(
+  const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
+
+  useEffect(() => {
+    const now = new Date();
+    const reference = `CONTRAT-${now.getFullYear()}-${String(
       Math.floor(Math.random() * 1000)
-    ).padStart(3, "0")}`,
-    date: new Date().toISOString().split("T")[0],
-    title: "Contrat de prestation de services",
-    description:
-      "Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s'engage à réaliser les prestations décrites ci-après pour le compte du Client.",
-    scope:
-      "Les prestations comprennent la conception, le développement et la mise en ligne d'un site web professionnel.",
-    deliverables:
-      "Site web responsive, documentation technique, formation à l'utilisation du back-office.",
-    timeline:
-      "Phase 1: Conception (2 semaines), Phase 2: Développement (4 semaines), Phase 3: Tests et déploiement (2 semaines).",
-    location:
-      "Les prestations seront réalisées dans les locaux du Prestataire.",
-    confidentiality:
-      "Les parties s'engagent à garder confidentielles les informations échangées dans le cadre de ce contrat, pendant toute la durée du contrat et pour une période de 2 ans après sa fin.",
-    intellectualProperty:
-      "Le Prestataire cède au Client l'ensemble des droits de propriété intellectuelle sur les livrables, après paiement intégral des prestations.",
-    warranties:
-      "Le Prestataire garantit que les livrables sont conformes aux spécifications pendant une durée de 3 mois à compter de la livraison finale.",
-    liabilities:
-      "La responsabilité du Prestataire est limitée au montant total du contrat. Le Prestataire ne pourra être tenu responsable des dommages indirects.",
-    forceMajeure:
-      "Aucune partie ne sera tenue responsable de la non-exécution de ses obligations en cas de force majeure.",
-    disputeResolution:
-      "En cas de litige, les parties s'efforceront de régler leur différend à l'amiable. À défaut, le litige sera porté devant les tribunaux compétents.",
-    applicableLaw: "Le présent contrat est soumis au droit français.",
-    additionalClauses: "",
-  });
+    ).padStart(3, "0")}`;
+    const date = now.toISOString().split("T")[0];
+
+    setContractInfo({
+      reference,
+      date,
+      title: "Contrat de prestation de services",
+      description:
+        "Le présent contrat a pour objet de définir les conditions dans lesquelles le Prestataire s'engage à réaliser les prestations décrites ci-après pour le compte du Client.",
+      scope:
+        "Les prestations comprennent la conception, le développement et la mise en ligne d'un site web professionnel.",
+      deliverables:
+        "Site web responsive, documentation technique, formation à l'utilisation du back-office.",
+      timeline:
+        "Phase 1: Conception (2 semaines), Phase 2: Développement (4 semaines), Phase 3: Tests et déploiement (2 semaines).",
+      location:
+        "Les prestations seront réalisées dans les locaux du Prestataire.",
+      confidentiality:
+        "Les parties s'engagent à garder confidentielles les informations échangées dans le cadre de ce contrat, pendant toute la durée du contrat et pour une période de 2 ans après sa fin.",
+      intellectualProperty:
+        "Le Prestataire cède au Client l'ensemble des droits de propriété intellectuelle sur les livrables, après paiement intégral des prestations.",
+      warranties:
+        "Le Prestataire garantit que les livrables sont conformes aux spécifications pendant une durée de 3 mois à compter de la livraison finale.",
+      liabilities:
+        "La responsabilité du Prestataire est limitée au montant total du contrat. Le Prestataire ne pourra être tenu responsable des dommages indirects.",
+      forceMajeure:
+        "Aucune partie ne sera tenue responsable de la non-exécution de ses obligations en cas de force majeure.",
+      disputeResolution:
+        "En cas de litige, les parties s'efforceront de régler leur différend à l'amiable. À défaut, le litige sera porté devant les tribunaux compétents.",
+      applicableLaw: "Le présent contrat est soumis au droit français.",
+      additionalClauses: "",
+    });
+  }, []);
 
   // Calculate totals
   const calculateTotals = () => {
@@ -141,6 +149,8 @@ export function ContratDePrestationEditor() {
   };
 
   const { totalHT, totalTVA, totalTTC } = calculateTotals();
+
+  if (!contractInfo) return null;
 
   const contratDePrestation: ContratDePrestation = {
     clientInfo,
@@ -245,7 +255,6 @@ export function ContratDePrestationEditor() {
             }
           });
 
-
           // Capture the current section
           const canvas = await html2canvas(section as HTMLElement, {
             scale: 2,
@@ -343,12 +352,28 @@ export function ContratDePrestationEditor() {
             variant="outline"
             size="sm"
             className="flex items-center space-x-2"
-            onClick={() => {
-              // Save functionality would go here
-              toast({
-                title: "Contrat sauvegardé",
-                description: "Le contrat a été sauvegardé avec succès.",
+            onClick={async () => {
+              console.log("Payload envoyé à Supabase :", contratDePrestation);
+
+              const response = await fetch("/api/contrat-de-prestation", {
+                method: "POST",
+                body: JSON.stringify(contratDePrestation),
+                headers: { "Content-Type": "application/json" },
               });
+
+              if (response.ok) {
+                toast({
+                  title: "Contrat de prestation sauvegardé",
+                  description: "Le document a été sauvegardé avec succès.",
+                });
+              } else {
+                const error = await response.json();
+                console.error("Erreur API Supabase :", error);
+                toast({
+                  title: "Erreur",
+                  description: error.error || "Échec de la sauvegarde.",
+                });
+              }
             }}
           >
             <Save className="h-4 w-4" />

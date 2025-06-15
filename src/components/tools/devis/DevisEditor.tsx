@@ -11,8 +11,6 @@ import { ClientInfo, EstimateInfo, EstimateItem, CompanyInfo } from "./types";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-
-
 export function DevisEditor() {
   const { toast } = useToast();
   const documentRef = useRef<HTMLDivElement>(null);
@@ -157,14 +155,12 @@ export function DevisEditor() {
           termsSection.classList.add("hidden");
         }
 
-
         const mainCanvas = await html2canvas(mainContent as HTMLElement, {
           scale: 2,
           logging: false,
           useCORS: true,
           backgroundColor: "#ffffff",
         });
-
 
         // Show terms content again
         if (termsSection) {
@@ -316,12 +312,28 @@ export function DevisEditor() {
             variant="outline"
             size="sm"
             className="flex items-center space-x-2"
-            onClick={() => {
-              // Save functionality would go here
-              toast({
-                title: "Devis sauvegardé",
-                description: "Le devis a été sauvegardé avec succès.",
+            onClick={async () => {
+              console.log("Payload envoyé à Supabase :", estimateInfo);
+
+              const response = await fetch("/api/devis", {
+                method: "POST",
+                body: JSON.stringify(estimateInfo),
+                headers: { "Content-Type": "application/json" },
               });
+
+              if (response.ok) {
+                toast({
+                  title: "Devis sauvegardé",
+                  description: "Le document a été sauvegardé avec succès.",
+                });
+              } else {
+                const error = await response.json();
+                console.error("Erreur API Supabase :", error);
+                toast({
+                  title: "Erreur",
+                  description: error.error || "Échec de la sauvegarde.",
+                });
+              }
             }}
           >
             <Save className="h-4 w-4" />

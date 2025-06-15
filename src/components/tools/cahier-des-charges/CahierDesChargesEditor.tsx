@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, /* Download, */ FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -21,10 +21,10 @@ import {
   TechnicalRequirement,
   QualityRequirement,
   Budget,
+  BudgetItem,
   Timeline,
   Risk,
   Approval,
-  BudgetItem,
   PaymentMilestone,
   TimelinePhase,
 } from "./types";
@@ -35,17 +35,7 @@ export function CahierDesChargesEditor() {
   const { toast } = useToast();
   const documentRef = useRef<HTMLDivElement>(null);
 
-  const [projectInfo, setProjectInfo] = useState<ProjectInfo>({
-    title: "Cahier des Charges",
-    reference: `CDC-${new Date().getFullYear()}-${String(
-      Math.floor(Math.random() * 1000)
-    ).padStart(3, "0")}`,
-    date: new Date().toISOString().split("T")[0],
-    version: "1.0",
-    status: "draft",
-    summary: "Description du projet et de ses objectifs généraux.",
-  });
-
+  const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
   const [clientInfo, setClientInfo] = useState<ClientInfo>({
     name: "",
     contactPerson: "",
@@ -261,7 +251,7 @@ export function CahierDesChargesEditor() {
       probability: "medium",
       mitigation: "Stratégie de mitigation du risque.",
       contingency: "Plan de contingence en cas de réalisation du risque.",
-      title: undefined
+      title: undefined,
     },
   ]);
 
@@ -276,6 +266,26 @@ export function CahierDesChargesEditor() {
   });
 
   const [appendices, setAppendices] = useState<string>("");
+
+  useEffect(() => {
+    const now = new Date();
+    const initialProjectInfo: ProjectInfo = {
+      title: "Cahier des Charges",
+      reference: `CDC-${now.getFullYear()}-${String(
+        Math.floor(Math.random() * 1000)
+      ).padStart(3, "0")}`,
+      date: now.toISOString().split("T")[0],
+      version: "1.0",
+      status: "draft",
+      summary: "Description du projet et de ses objectifs généraux.",
+    };
+
+    setProjectInfo(initialProjectInfo);
+  }, []);
+
+  if (!projectInfo) {
+    return null; // ou un spinner
+  }
 
   const cahierDesCharges: CahierDesCharges = {
     projectInfo,
@@ -308,7 +318,7 @@ export function CahierDesChargesEditor() {
     setTeamMembers([...teamMembers, newMember]);
   };
 
-  const updateTeamMember = (
+  const _updateTeamMember = (
     id: string,
     field: keyof TeamMember,
     value: string
@@ -335,7 +345,7 @@ export function CahierDesChargesEditor() {
     setObjectives([...objectives, newObjective]);
   };
 
-  const updateObjective = (
+  const _updateObjective = (
     id: string,
     field: keyof ProjectObjective,
     value: string | "high" | "medium" | "low"
@@ -365,7 +375,7 @@ export function CahierDesChargesEditor() {
     setDeliverables([...deliverables, newDeliverable]);
   };
 
-  const updateDeliverable = (
+  const _updateDeliverable = (
     id: string,
     field: keyof Deliverable,
     value: string
@@ -396,7 +406,7 @@ export function CahierDesChargesEditor() {
     setMilestones([...milestones, newMilestone]);
   };
 
-  const updateMilestone = (
+  const _updateMilestone = (
     id: string,
     field: keyof Milestone,
     value: string | string[]
@@ -424,7 +434,7 @@ export function CahierDesChargesEditor() {
     setFunctionalRequirements([...functionalRequirements, newRequirement]);
   };
 
-  const updateFunctionalRequirement = (
+  const _updateFunctionalRequirement = (
     id: string,
     field: keyof FunctionalRequirement,
     value: string | "critical" | "high" | "medium" | "low"
@@ -454,7 +464,7 @@ export function CahierDesChargesEditor() {
     setTechnicalRequirements([...technicalRequirements, newRequirement]);
   };
 
-  const updateTechnicalRequirement = (
+  const _updateTechnicalRequirement = (
     id: string,
     field: keyof TechnicalRequirement,
     value: string | "critical" | "high" | "medium" | "low"
@@ -483,7 +493,7 @@ export function CahierDesChargesEditor() {
     setQualityRequirements([...qualityRequirements, newRequirement]);
   };
 
-  const updateQualityRequirement = (
+  const _updateQualityRequirement = (
     id: string,
     field: keyof QualityRequirement,
     value:
@@ -521,7 +531,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const updateBudgetItem = (
+  const _updateBudgetItem = (
     id: string,
     field: keyof BudgetItem,
     value: string | number
@@ -557,7 +567,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const updatePaymentMilestone = (
+  const _updatePaymentMilestone = (
     id: string,
     field: keyof PaymentMilestone,
     value: string | number
@@ -596,7 +606,7 @@ export function CahierDesChargesEditor() {
     });
   };
 
-  const updateTimelinePhase = (
+  const _updateTimelinePhase = (
     id: string,
     field: keyof TimelinePhase,
     value: string | string[]
@@ -624,12 +634,12 @@ export function CahierDesChargesEditor() {
       probability: "medium",
       mitigation: "",
       contingency: "",
-      title: undefined
+      title: undefined,
     };
     setRisks([...risks, newRisk]);
   };
 
-  const updateRisk = (
+  const _updateRisk = (
     id: string,
     field: keyof Risk,
     value: string | "high" | "medium" | "low"
@@ -654,116 +664,76 @@ export function CahierDesChargesEditor() {
     );
   };
 
+  
   const exportToPdf = async () => {
-    if (documentRef.current) {
-      toast({
-        title: "Génération du PDF",
-        description: "Veuillez patienter pendant la génération du PDF...",
+    if (!documentRef.current) {
+      console.error("documentRef.current is null");
+      return;
+    }
+
+    toast({
+      title: "Génération du PDF",
+      description: "Veuillez patienter...",
+    });
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+
+    const pages = documentRef.current.querySelectorAll(".pdf-page");
+    if (!pages || pages.length === 0) {
+      console.error("Aucune section .pdf-page trouvée");
+      return;
+    }
+
+    for (let i = 0; i < pages.length; i++) {
+      const el = pages[i] as HTMLElement;
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#fff",
       });
 
-      try {
-        // Create a PDF document
-        const pdf = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-          compress: true,
-        });
+      const imgData = canvas.toDataURL("image/png");
 
-        // Define PDF dimensions and margins
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const margin = 15; // 15mm margins on all sides
+      const ratio = Math.min(
+        (pdfWidth - margin * 2) / canvas.width,
+        (pdfHeight - margin * 2) / canvas.height
+      );
 
-        // Get all sections
-        const sections = documentRef.current.querySelectorAll(".cdc-section");
-        if (!sections || sections.length === 0) {
-          throw new Error("Could not find document sections");
-        }
+      const imgWidth = canvas.width * ratio;
+      const imgHeight = canvas.height * ratio;
 
-        // Process each section
-        for (let i = 0; i < sections.length; i++) {
-          const section = sections[i];
+      const x = (pdfWidth - imgWidth) / 2;
+      const y = margin;
 
-          // Hide all sections except the current one
-          Array.from(sections).forEach((s, index) => {
-            if (index !== i) {
-              (s as HTMLElement).style.display = "none";
-            } else {
-              (s as HTMLElement).style.display = "block";
-            }
-          });
+      if (i > 0) pdf.addPage();
 
-          // Capture the current section
-          const canvas = await html2canvas(section as HTMLElement, {
-            scale: 2,
-            logging: false,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-          });
+      pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
 
-          // Add section to PDF
-          const imgData = canvas.toDataURL("image/png");
-          const imgWidth = canvas.width;
-          const imgHeight = canvas.height;
-
-          // Calculate ratio while ensuring margins
-          const availableWidth = pdfWidth - margin * 2;
-          const availableHeight = pdfHeight - margin * 2;
-          const imgRatio = Math.min(
-            availableWidth / imgWidth,
-            availableHeight / imgHeight
-          );
-
-          // Center the image with margins
-          const imgX = margin + (availableWidth - imgWidth * imgRatio) / 2;
-          const imgY = margin;
-
-          // Add new page for sections after the first one
-          if (i > 0) {
-            pdf.addPage();
-          }
-
-          pdf.addImage(
-            imgData,
-            "PNG",
-            imgX,
-            imgY,
-            imgWidth * imgRatio,
-            imgHeight * imgRatio
-          );
-
-          // Add page number
-          pdf.setFontSize(8);
-          pdf.setTextColor(150, 150, 150);
-          pdf.text(
-            `Page ${i + 1}/${sections.length}`,
-            pdfWidth - 20,
-            pdfHeight - 10
-          );
-        }
-
-        // Restore display of all sections
-        Array.from(sections).forEach((s) => {
-          (s as HTMLElement).style.display = "block";
-        });
-
-        // Save the PDF
-        pdf.save(`${projectInfo.reference}.pdf`);
-
-        toast({
-          title: "PDF généré avec succès",
-          description: `Le PDF a été téléchargé (${sections.length} pages)`,
-        });
-      } catch (error) {
-        console.error("Erreur lors de la génération du PDF:", error);
-        toast({
-          title: "Erreur",
-          description: "Une erreur est survenue lors de la génération du PDF.",
-        });
-      }
+      pdf.setFontSize(8);
+      pdf.setTextColor(150, 150, 150);
+      pdf.text(`Page ${i + 1}/${pages.length}`, pdfWidth - 25, pdfHeight - 10);
     }
+
+    pdf.save(`${projectInfo.reference}.pdf`);
+
+    toast({
+      title: "PDF généré",
+      description: `${pages.length} page(s) générée(s)`,
+    });
   };
+
+  function updateApproval(field: keyof Approval, value: string): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -811,12 +781,28 @@ export function CahierDesChargesEditor() {
             variant="outline"
             size="sm"
             className="flex items-center space-x-2"
-            onClick={() => {
-              // Save functionality would go here
-              toast({
-                title: "Cahier des charges sauvegardé",
-                description: "Le document a été sauvegardé avec succès.",
+            onClick={async () => {
+              console.log("Payload envoyé à Supabase :", cahierDesCharges); 
+
+              const response = await fetch("/api/cahier-des-charges", {
+                method: "POST",
+                body: JSON.stringify(cahierDesCharges),
+                headers: { "Content-Type": "application/json" },
               });
+
+              if (response.ok) {
+                toast({
+                  title: "Cahier des charges sauvegardé",
+                  description: "Le document a été sauvegardé avec succès.",
+                });
+              } else {
+                const error = await response.json(); 
+                console.error("Erreur API Supabase :", error);
+                toast({
+                  title: "Erreur",
+                  description: error.error || "Échec de la sauvegarde.",
+                });
+              }
             }}
           >
             <Save className="h-4 w-4" />
@@ -872,52 +858,50 @@ export function CahierDesChargesEditor() {
             setApproval={setApproval}
             setAppendices={setAppendices}
             addTeamMember={addTeamMember}
-            _updateTeamMember={updateTeamMember}
+            _updateTeamMember={_updateTeamMember}
             removeTeamMember={removeTeamMember}
             addObjective={addObjective}
-            _updateObjective={updateObjective}
+            _updateObjective={_updateObjective}
             removeObjective={removeObjective}
             addDeliverable={addDeliverable}
-            _updateDeliverable={updateDeliverable}
+            _updateDeliverable={_updateDeliverable}
             removeDeliverable={removeDeliverable}
             addMilestone={addMilestone}
-            _updateMilestone={updateMilestone}
+            _updateMilestone={_updateMilestone}
             removeMilestone={removeMilestone}
             addFunctionalRequirement={addFunctionalRequirement}
-            _updateFunctionalRequirement={updateFunctionalRequirement}
+            _updateFunctionalRequirement={_updateFunctionalRequirement}
             removeFunctionalRequirement={removeFunctionalRequirement}
             addTechnicalRequirement={addTechnicalRequirement}
-            _updateTechnicalRequirement={updateTechnicalRequirement}
+            _updateTechnicalRequirement={_updateTechnicalRequirement}
             removeTechnicalRequirement={removeTechnicalRequirement}
             addQualityRequirement={addQualityRequirement}
-            _updateQualityRequirement={updateQualityRequirement}
+            _updateQualityRequirement={_updateQualityRequirement}
             removeQualityRequirement={removeQualityRequirement}
             addBudgetItem={addBudgetItem}
-            _updateBudgetItem={updateBudgetItem}
+            _updateBudgetItem={_updateBudgetItem}
             removeBudgetItem={removeBudgetItem}
             addPaymentMilestone={addPaymentMilestone}
-            _updatePaymentMilestone={updatePaymentMilestone}
+            _updatePaymentMilestone={_updatePaymentMilestone}
             removePaymentMilestone={removePaymentMilestone}
             addTimelinePhase={addTimelinePhase}
-            _updateTimelinePhase={updateTimelinePhase}
+            _updateTimelinePhase={_updateTimelinePhase}
             removeTimelinePhase={removeTimelinePhase}
             addRisk={addRisk}
-            _updateRisk={updateRisk}
+            _updateRisk={_updateRisk}
             removeRisk={removeRisk}
             calculateTotalBudget={calculateTotalBudget}
             calculateTotalPayments={calculateTotalPayments}
+            // il n y a pas de updateTimeline
+            // updateTimeline={updateTimeline}
+            // Property '_updateTimeline' is missing in type
             _updateTimeline={function (
               field: keyof Timeline,
               value: string | Date
             ): void {
               throw new Error("Function not implemented.");
             }}
-            updateApproval={function (
-              field: keyof Approval,
-              value: string
-            ): void {
-              throw new Error("Function not implemented.");
-            }}
+            updateApproval={updateApproval}
           />
         </div>
       </div>

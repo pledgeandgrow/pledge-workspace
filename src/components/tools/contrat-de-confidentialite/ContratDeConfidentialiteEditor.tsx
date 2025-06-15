@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -95,10 +95,17 @@ export function ContratDeConfidentialiteEditor() {
   });
 
   // Generate a reference number for the contract
-  const reference = `NDA-${new Date().getFullYear()}-${String(
-    Math.floor(Math.random() * 1000)
-  ).padStart(3, "0")}`;
-  const date = new Date().toISOString().split("T")[0];
+  const [reference, setReference] = useState("");
+  const [date, setDate] = useState("");
+
+  useEffect(() => {
+    const now = new Date();
+    const ref = `NDA-${now.getFullYear()}-${String(
+      Math.floor(Math.random() * 1000)
+    ).padStart(3, "0")}`;
+    setReference(ref);
+    setDate(now.toISOString().split("T")[0]);
+  }, []);
 
   const contratDeConfidentialite: ContratDeConfidentialite = {
     reference,
@@ -150,7 +157,6 @@ export function ContratDeConfidentialiteEditor() {
               (s as HTMLElement).style.display = "block";
             }
           });
-
 
           // Capture the current section
           const canvas = await html2canvas(section as HTMLElement, {
@@ -249,12 +255,31 @@ export function ContratDeConfidentialiteEditor() {
             variant="outline"
             size="sm"
             className="flex items-center space-x-2"
-            onClick={() => {
-              // Save functionality would go here
-              toast({
-                title: "Contrat sauvegardé",
-                description: "Le contrat a été sauvegardé avec succès.",
+            onClick={async () => {
+              console.log(
+                "Payload envoyé à Supabase :",
+                contratDeConfidentialite
+              );
+
+              const response = await fetch("/api/contrat-de-confidentialite", {
+                method: "POST",
+                body: JSON.stringify(contratDeConfidentialite),
+                headers: { "Content-Type": "application/json" },
               });
+
+              if (response.ok) {
+                toast({
+                  title: "Contrat de confidentialité sauvegardé",
+                  description: "Le document a été sauvegardé avec succès.",
+                });
+              } else {
+                const error = await response.json();
+                console.error("Erreur API Supabase :", error);
+                toast({
+                  title: "Erreur",
+                  description: error.error || "Échec de la sauvegarde.",
+                });
+              }
             }}
           >
             <Save className="h-4 w-4" />
