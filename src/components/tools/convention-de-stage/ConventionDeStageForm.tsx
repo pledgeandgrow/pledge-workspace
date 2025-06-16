@@ -1,14 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { ConventionDeStage, StudentInfo, CompanyInfo, SupervisorInfo, InternshipInfo, EducationalInfo } from "./types";
 
 interface ConventionDeStageFormProps {
@@ -26,142 +21,158 @@ export function ConventionDeStageForm({
   conventionDeStage,
   onStudentInfoChange,
   onCompanyInfoChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCompanySupervisorChange,
   onInternshipInfoChange,
   onEducationalInfoChange,
   onAdditionalClausesChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSignaturesChange,
 }: ConventionDeStageFormProps) {
+  const [activeTab, setActiveTab] = useState<"student" | "company" | "internship" | "education" | "clauses">("student");
+
   return (
-    <div className="space-y-6 p-6 bg-white rounded-lg shadow text-black">
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="student-info">
-          <AccordionTrigger className="text-black font-medium">Informations sur l&apos;étudiant</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-              <div className="space-y-3">
-                <Label htmlFor="student-firstName">Prénom</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="student-firstName"
-                  value={conventionDeStage.studentInfo.firstName}
-                  onChange={(e) => onStudentInfoChange({
-                    ...conventionDeStage.studentInfo,
-                    firstName: e.target.value,
-                  })}
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="student-lastName">Nom</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="student-lastName"
-                  value={conventionDeStage.studentInfo.lastName}
-                  onChange={(e) => onStudentInfoChange({
-                    ...conventionDeStage.studentInfo,
-                    lastName: e.target.value,
-                  })}
-                />
-              </div>
+    <div className="space-y-6">
+      {/* Onglets */}
+      <div className="flex border-b">
+        {[
+          { label: "Étudiant·e", value: "student" },
+          { label: "Entreprise", value: "company" },
+          { label: "Stage", value: "internship" },
+          { label: "Établissement", value: "education" },
+          { label: "Clauses", value: "clauses" },
+        ].map(({ label, value }) => (
+          <button
+            key={value}
+            className={`px-4 py-2 font-medium text-sm ${
+              activeTab === value
+                ? "border-b-2 border-primary text-primary"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab(value as typeof activeTab)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Étudiant */}
+      {activeTab === "student" && (
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="font-semibold mb-4">Informations sur l&apos;étudiant·e</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Prénom</Label>
+              <Input
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.studentInfo.firstName}
+                onChange={(e) =>
+                  onStudentInfoChange({ ...conventionDeStage.studentInfo, firstName: e.target.value })
+                }
+              />
             </div>
-          </AccordionContent>
-        </AccordionItem>
-        
-        <AccordionItem value="company-info">
-          <AccordionTrigger className="text-black font-medium">Informations sur l&apos;entreprise</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-              <div className="space-y-3">
-                <Label htmlFor="company-name">Nom de l&apos;entreprise</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="company-name"
-                  value={conventionDeStage.companyInfo.name}
-                  onChange={(e) => onCompanyInfoChange({
-                    ...conventionDeStage.companyInfo,
-                    name: e.target.value,
-                  })}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label>Nom</Label>
+              <Input
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.studentInfo.lastName}
+                onChange={(e) =>
+                  onStudentInfoChange({ ...conventionDeStage.studentInfo, lastName: e.target.value })
+                }
+              />
             </div>
-          </AccordionContent>
-        </AccordionItem>
-        
-        <AccordionItem value="internship-info">
-          <AccordionTrigger className="text-black font-medium">Informations sur le stage</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-              <div className="space-y-3">
-                <Label htmlFor="internship-startDate">Date de début</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="internship-startDate"
-                  type="date"
-                  value={conventionDeStage.internshipInfo.startDate}
-                  onChange={(e) => onInternshipInfoChange({
-                    ...conventionDeStage.internshipInfo,
-                    startDate: e.target.value,
-                  })}
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="internship-endDate">Date de fin</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="internship-endDate"
-                  type="date"
-                  value={conventionDeStage.internshipInfo.endDate}
-                  onChange={(e) => onInternshipInfoChange({
-                    ...conventionDeStage.internshipInfo,
-                    endDate: e.target.value,
-                  })}
-                />
-              </div>
+          </div>
+        </div>
+      )}
+
+      {/* Entreprise */}
+      {activeTab === "company" && (
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="font-semibold mb-4">Informations sur l&apos;entreprise</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Nom de l&apos;entreprise</Label>
+              <Input
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.companyInfo.name}
+                onChange={(e) =>
+                  onCompanyInfoChange({ ...conventionDeStage.companyInfo, name: e.target.value })
+                }
+              />
             </div>
-          </AccordionContent>
-        </AccordionItem>
-        
-        <AccordionItem value="educational-info">
-          <AccordionTrigger className="text-black font-medium">Informations sur l&apos;établissement d&apos;enseignement</AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-              <div className="space-y-3">
-                <Label htmlFor="institution-name">Nom de l&apos;établissement</Label>
-                <Input
-                  className="text-black bg-white border-gray-300 focus:border-blue-500"
-                  id="institution-name"
-                  value={conventionDeStage.educationalInfo.institution.name}
-                  onChange={(e) => onEducationalInfoChange({
+          </div>
+        </div>
+      )}
+
+      {/* Stage */}
+      {activeTab === "internship" && (
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="font-semibold mb-4">Informations sur le stage</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Date de début</Label>
+              <Input
+                type="date"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.internshipInfo.startDate}
+                onChange={(e) =>
+                  onInternshipInfoChange({ ...conventionDeStage.internshipInfo, startDate: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Date de fin</Label>
+              <Input
+                type="date"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.internshipInfo.endDate}
+                onChange={(e) =>
+                  onInternshipInfoChange({ ...conventionDeStage.internshipInfo, endDate: e.target.value })
+                }
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Établissement */}
+      {activeTab === "education" && (
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="font-semibold mb-4">Établissement d&apos;enseignement</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Nom de l&apos;établissement</Label>
+              <Input
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+                value={conventionDeStage.educationalInfo.institution.name}
+                onChange={(e) =>
+                  onEducationalInfoChange({
                     ...conventionDeStage.educationalInfo,
                     institution: {
                       ...conventionDeStage.educationalInfo.institution,
                       name: e.target.value,
                     },
-                  })}
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-        
-        <AccordionItem value="additional-clauses">
-          <AccordionTrigger className="text-black font-medium">Clauses additionnelles</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-3">
-              <Label htmlFor="additional-clauses">Clauses additionnelles</Label>
-              <Textarea
-                className="text-black bg-white border-gray-300 focus:border-blue-500"
-                id="additional-clauses"
-                value={conventionDeStage.additionalClauses}
-                onChange={(e) => onAdditionalClausesChange(e.target.value)}
-                rows={5}
+                  })
+                }
               />
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </div>
+        </div>
+      )}
+
+      {/* Clauses supplémentaires */}
+      {activeTab === "clauses" && (
+        <div className="border border-border rounded-lg p-4">
+          <h3 className="font-semibold mb-4">Clauses additionnelles</h3>
+          <div className="space-y-2">
+            <Label>Clauses</Label>
+            <Textarea
+              rows={5}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white"
+              value={conventionDeStage.additionalClauses}
+              onChange={(e) => onAdditionalClausesChange(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
