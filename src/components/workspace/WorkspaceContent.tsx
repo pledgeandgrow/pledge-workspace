@@ -15,7 +15,7 @@ const categories = {
   hr: "HR",
 };
 
-// Fonction pour récupérer le dernier document d'une table Supabase
+// Fonction pour récupérer le dernier document de la table
 async function fetchLastDocument(table: string) {
   const { data, error } = await supabase
     .from(table)
@@ -67,18 +67,66 @@ export function WorkspaceContent({ title = "All Tools", filterType = "all" }: Wo
     async function loadData() {
       setLoading(true);
 
-      const tables = [
-        { id: "devis", name: "Devis", category: categories.finance, color: "bg-blue-100 dark:bg-blue-900/30", owner: "Finance Team" },
-        { id: "facture", name: "Facture", category: categories.finance, color: "bg-emerald-100 dark:bg-emerald-900/30", owner: "Finance Team" },
-        { id: "cahier_des_charges", name: "Cahier des Charges", category: categories.project, color: "bg-orange-100 dark:bg-orange-900/30", owner: "Project Team" },
-        { id: "convention_de_stage", name: "Convention de Stage", category: categories.hr, color: "bg-purple-100 dark:bg-purple-900/30", owner: "HR Team" },
-        { id: "contrat_de_prestation", name: "Contrat de Prestation", category: categories.legal, color: "bg-indigo-100 dark:bg-indigo-900/30", owner: "Legal Team" },
-        { id: "contrat_de_confidentialite", name: "Contrat de Confidentialité", category: categories.legal, color: "bg-red-100 dark:bg-red-900/30", owner: "Legal Team" },
+      const tools = [
+        {
+          id: "devis",
+          name: "Devis",
+          path: "devis",
+          table: "devis",
+          category: categories.finance,
+          color: "bg-blue-100 dark:bg-blue-900/30",
+          owner: "Finance Team",
+        },
+        {
+          id: "facture",
+          name: "Facture",
+          path: "facture",
+          table: "facture",
+          category: categories.finance,
+          color: "bg-emerald-100 dark:bg-emerald-900/30",
+          owner: "Finance Team",
+        },
+        {
+          id: "cahier-des-charges",
+          name: "Cahier des Charges",
+          path: "cahier-des-charges",
+          table: "cahier_des_charges",
+          category: categories.project,
+          color: "bg-orange-100 dark:bg-orange-900/30",
+          owner: "Project Team",
+        },
+        {
+          id: "convention-de-stage",
+          name: "Convention de Stage",
+          path: "convention-de-stage",
+          table: "convention_de_stage",
+          category: categories.hr,
+          color: "bg-purple-100 dark:bg-purple-900/30",
+          owner: "HR Team",
+        },
+        {
+          id: "contrat-de-prestation",
+          name: "Contrat de Prestation",
+          path: "contrat-de-prestation",
+          table: "contrat_de_prestation",
+          category: categories.legal,
+          color: "bg-indigo-100 dark:bg-indigo-900/30",
+          owner: "Legal Team",
+        },
+        {
+          id: "contrat-de-confidentialite",
+          name: "Contrat de Confidentialité",
+          path: "contrat-de-confidentialite",
+          table: "contrat_de_confidentialite",
+          category: categories.legal,
+          color: "bg-red-100 dark:bg-red-900/30",
+          owner: "Legal Team",
+        },
       ];
 
       const results = await Promise.all(
-        tables.map(async (tool) => {
-          const doc = await fetchLastDocument(tool.id);
+        tools.map(async (tool) => {
+          const doc = await fetchLastDocument(tool.table);
           const lastUpdated = doc?.created_at
             ? new Date(doc.created_at).toLocaleString("fr-FR", {
                 hour: "2-digit",
@@ -91,6 +139,7 @@ export function WorkspaceContent({ title = "All Tools", filterType = "all" }: Wo
           return {
             id: tool.id,
             name: tool.name,
+            path: tool.path,
             description: `Dernier document créé le ${lastUpdated}`,
             owner: tool.owner,
             members: 1,
@@ -140,7 +189,9 @@ export function WorkspaceContent({ title = "All Tools", filterType = "all" }: Wo
           <p className="text-lg text-gray-500 mb-2">Aucun outil trouvé</p>
           <p className="text-sm text-gray-400">
             {searchQuery
-              ? `Aucun résultat pour "${searchQuery}" dans ${currentFilter === "all" ? "toutes les catégories" : categories[currentFilter]}`
+              ? `Aucun résultat pour "${searchQuery}" dans ${
+                  currentFilter === "all" ? "toutes les catégories" : categories[currentFilter]
+                }`
               : `Aucun outil dans la catégorie ${categories[currentFilter]}`}
           </p>
         </div>
