@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, Printer, FileText, ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
@@ -48,13 +48,9 @@ export function FactureEditor() {
 
   const [invoiceInfo, setInvoiceInfo] = useState<InvoiceInfo>({
     title: "Facture",
-    number: `INV-${new Date().getFullYear()}-${String(
-      Math.floor(Math.random() * 1000)
-    ).padStart(3, "0")}`,
-    date: new Date().toISOString().split("T")[0],
-    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0],
+    number: "",
+    date: "",
+    dueDate: "",
     notes: "",
     paymentTerms: "30 jours",
     paymentMethod: "Virement bancaire",
@@ -63,6 +59,25 @@ export function FactureEditor() {
       "Les présentes conditions générales de vente s'appliquent à toutes les prestations de services conclues par le prestataire auprès des clients, quelles que soient les clauses pouvant figurer sur les documents du client, et notamment ses conditions générales d'achat.",
     referenceDevis: "",
   });
+
+  useEffect(() => {
+    const now = new Date();
+    const invoiceNumber = `INV-${now.getFullYear()}-${String(
+      Math.floor(Math.random() * 1000)
+    ).padStart(3, "0")}`;
+
+    const currentDate = now.toISOString().split("T")[0];
+    const due = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+
+    setInvoiceInfo((prev) => ({
+      ...prev,
+      number: invoiceNumber,
+      date: currentDate,
+      dueDate: due,
+    }));
+  }, []);
 
   const [items, setItems] = useState<InvoiceItem[]>([
     {
@@ -352,12 +367,28 @@ export function FactureEditor() {
             variant="outline"
             size="sm"
             className="flex items-center space-x-2"
-            onClick={() => {
-              // Save functionality would go here
-              toast({
-                title: "Facture sauvegardée",
-                description: "La facture a été sauvegardée avec succès.",
+            onClick={async () => {
+              console.log("Payload envoyé à Supabase :", invoiceInfo);
+
+              const response = await fetch("/api/facture", {
+                method: "POST",
+                body: JSON.stringify(invoiceInfo),
+                headers: { "Content-Type": "application/json" },
               });
+
+              if (response.ok) {
+                toast({
+                  title: "Facture sauvegardée",
+                  description: "La facture a été sauvegardée avec succès.",
+                });
+              } else {
+                const error = await response.json();
+                console.error("Erreur API Supabase :", error);
+                toast({
+                  title: "Erreur",
+                  description: error.error || "Échec de la sauvegarde.",
+                });
+              }
             }}
           >
             <Save className="h-4 w-4" />

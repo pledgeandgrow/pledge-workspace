@@ -62,6 +62,7 @@ export function DevisEditor() {
     termsAndConditions:
       "Les présentes conditions générales de vente s'appliquent à toutes les prestations de services conclues par le prestataire auprès des clients, quelles que soient les clauses pouvant figurer sur les documents du client, et notamment ses conditions générales d'achat.",
   });
+  
 
   const [items, setItems] = useState<EstimateItem[]>([
     {
